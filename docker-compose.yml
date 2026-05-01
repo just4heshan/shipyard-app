@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: shipyard_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: shipyard_dev
+      POSTGRES_USER: shipyard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shipyard}
+    volumes:
+      - shipyard_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shipyard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: shipyard_mail
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  shipyard_postgres_data:
