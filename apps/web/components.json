@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "radix-nova",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@shipyard/ui",
+    "utils": "@shipyard/ui/lib/utils",
+    "ui": "@shipyard/ui/components",
+    "lib": "@shipyard/ui/lib",
+    "hooks": "@shipyard/ui/hooks"
+  },
+  "registries": {}
+}

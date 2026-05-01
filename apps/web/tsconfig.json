@@ -1,14 +1,12 @@
 {
   "extends": "@shipyard/typescript-config/nextjs.json",
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "strictNullChecks": true, 
+    "plugins": [{ "name": "next" }],
+    "strictNullChecks": true,
     "paths": {
       "@/*": ["./*"],
+      "@shipyard/ui": ["../../packages/ui/src"],
+      "@shipyard/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [
