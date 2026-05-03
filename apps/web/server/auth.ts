@@ -5,6 +5,9 @@ import { db } from "@shipyard/db";
 
 const result: NextAuthResult = NextAuth({
   adapter: PrismaAdapter(db),
+  // JWT strategy lets the Edge-runtime proxy verify sessions without a DB round-trip.
+  // PrismaAdapter still handles user/account creation — sessions are just not DB-stored.
+  session: { strategy: "jwt" },
   ...authConfig,
 });
 
