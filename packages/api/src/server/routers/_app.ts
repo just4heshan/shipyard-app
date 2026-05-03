@@ -1,5 +1,8 @@
-import { router } from "../trpc"
+import { router } from "../trpc";
+import { organizationRouter } from "./organization";
 
-export const appRouter = router({})
+export const appRouter = router({
+  organization: organizationRouter,
+});
 
-export type AppRouter = typeof appRouter
+export type AppRouter = typeof appRouter;
