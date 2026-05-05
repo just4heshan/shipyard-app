@@ -77,4 +77,30 @@ export const organizationRouter = router({
         },
       });
     }),
+
+  delete: protectedProcedure
+    .input(z.object({ orgId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Only owners can delete the organization
+      const membership = await ctx.db.member.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+          organizationId: input.orgId,
+        },
+        select: { role: true },
+      });
+
+      if (!membership || membership.role !== "OWNER") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only organization owners can delete the organization.",
+        });
+      }
+
+      await ctx.db.organization.delete({
+        where: { id: input.orgId },
+      });
+
+      return { success: true };
+    }),
 });
