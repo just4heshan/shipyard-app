@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../trpc";
+import { ORG_OWNER_LIMITS } from "../../config/plans";
 
 // Converts a display name to a URL-safe slug
 function toSlug(name: string): string {
@@ -40,6 +41,19 @@ export const organizationRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // Enforce per-tier ownership limit
+      const ownedCount = await ctx.db.member.count({
+        where: { userId: ctx.session.user.id, role: "OWNER" },
+      });
+
+      if (ownedCount >= ORG_OWNER_LIMITS.FREE) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message:
+            "Free plan is limited to 1 organization. Upgrade to Pro to create more.",
+        });
+      }
+
       const baseSlug = toSlug(input.name);
 
       if (!baseSlug) {
