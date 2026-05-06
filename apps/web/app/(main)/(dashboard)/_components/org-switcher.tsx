@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown, Lock, Plus } from "lucide-react";
 import type { SubscriptionTier } from "@shipyard/db";
+import { ORG_OWNER_LIMITS } from "@shipyard/api/config/plans";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +38,13 @@ function OrgInitials({ name }: { name: string }) {
   );
 }
 
-export function OrgSwitcher({ orgs }: { orgs: Org[] }) {
+export function OrgSwitcher({
+  orgs,
+  ownedOrgCount,
+}: {
+  orgs: Org[];
+  ownedOrgCount: number;
+}) {
   const { isMobile } = useSidebar();
   const [activeOrg, setActiveOrg] = React.useState(orgs[0]);
   const [createOrgOpen, setCreateOrgOpen] = React.useState(false);
@@ -95,22 +102,38 @@ export function OrgSwitcher({ orgs }: { orgs: Org[] }) {
 
               <DropdownMenuSeparator />
 
-              {/* e.preventDefault() stops Radix closing the dropdown in a way
-                  that steals focus and immediately collapses the dialog */}
-              <DropdownMenuItem
-                className="gap-2 p-2"
-                onSelect={(e) => {
-                  e.preventDefault();
-                  setCreateOrgOpen(true);
-                }}
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                  <Plus className="size-4" />
-                </div>
-                <span className="font-medium text-muted-foreground">
-                  Add organization
-                </span>
-              </DropdownMenuItem>
+              {ownedOrgCount < ORG_OWNER_LIMITS.FREE ? (
+                /* e.preventDefault() stops Radix closing the dropdown in a way
+                   that steals focus and immediately collapses the dialog */
+                <DropdownMenuItem
+                  className="gap-2 p-2"
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setCreateOrgOpen(true);
+                  }}
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                    <Plus className="size-4" />
+                  </div>
+                  <span className="font-medium text-muted-foreground">
+                    Add organization
+                  </span>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem disabled className="gap-2 p-2">
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                    <Lock className="size-4" />
+                  </div>
+                  <div className="grid">
+                    <span className="font-medium text-muted-foreground">
+                      Add organization
+                    </span>
+                    <span className="text-xs text-muted-foreground/60">
+                      Upgrade to Pro
+                    </span>
+                  </div>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

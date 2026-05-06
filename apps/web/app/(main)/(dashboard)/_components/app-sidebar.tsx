@@ -21,6 +21,7 @@ export async function AppSidebar() {
   const memberships = await db.member.findMany({
     where: { userId: session.user.id },
     select: {
+      role: true,
       organization: {
         select: {
           id: true,
@@ -34,12 +35,13 @@ export async function AppSidebar() {
   });
 
   const orgs = memberships.map((m) => m.organization);
+  const ownedOrgCount = memberships.filter((m) => m.role === "OWNER").length;
 
   return (
     <Sidebar collapsible="icon">
       {/* Header — org switcher */}
       <SidebarHeader>
-        <OrgSwitcher orgs={orgs} />
+        <OrgSwitcher orgs={orgs} ownedOrgCount={ownedOrgCount} />
       </SidebarHeader>
 
       {/* Nav items */}
