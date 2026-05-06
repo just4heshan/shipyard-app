@@ -5,7 +5,8 @@
   "exports": {
     "./server/trpc": "./src/server/trpc.ts",
     "./server/context": "./src/server/context.ts",
-    "./server/routers/_app": "./src/server/routers/_app.ts"
+    "./server/routers/_app": "./src/server/routers/_app.ts",
+    "./config/plans": "./src/config/plans.ts"
   },
   "devDependencies": {
     "@shipyard/typescript-config": "*",
