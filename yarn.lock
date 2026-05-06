@@ -2697,6 +2697,7 @@ __metadata:
     lucide-react: "npm:^1.14.0"
     next: "npm:16.2.0"
     next-auth: "npm:^5.0.0-beta.31"
+    next-themes: "npm:^0.4.6"
     nodemailer: "npm:^8.0.7"
     postcss: "npm:^8.5.13"
     radix-ui: "npm:^1.4.3"
@@ -5124,6 +5125,16 @@ __metadata:
     nodemailer:
       optional: true
   checksum: 10c0/9c021909f3b774f2967f706f5b060d9e8ab6ebd5907f4e810caf6838e983f4e10a3db5481c1de3e3a273f7ea3feeddeff6092a91662a5f5ca7bbf54f439c27d4
+  languageName: node
+  linkType: hard
+
+"next-themes@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "next-themes@npm:0.4.6"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/83590c11d359ce7e4ced14f6ea9dd7a691d5ce6843fe2dc520fc27e29ae1c535118478d03e7f172609c41b1ef1b8da6b8dd2d2acd6cd79cac1abbdbd5b99f2c4
   languageName: node
   linkType: hard
 
