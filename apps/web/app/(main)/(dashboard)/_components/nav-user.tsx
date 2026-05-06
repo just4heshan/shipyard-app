@@ -6,8 +6,12 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Monitor,
+  Moon,
   Sparkles,
+  Sun,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import {
   Avatar,
@@ -50,9 +54,30 @@ function userInitials(name?: string | null, email?: string | null): string {
   return email?.[0]?.toUpperCase() ?? "U";
 }
 
+const themeOrder = ["system", "light", "dark"] as const;
+type Theme = (typeof themeOrder)[number];
+const themeIcon: Record<Theme, React.ElementType> = {
+  system: Monitor,
+  light: Sun,
+  dark: Moon,
+};
+const themeLabel: Record<Theme, string> = {
+  system: "System",
+  light: "Light",
+  dark: "Dark",
+};
+
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
   const initials = userInitials(user.name, user.email);
+  const { theme, setTheme } = useTheme();
+
+  const currentTheme = (themeOrder.includes(theme as Theme) ? theme : "system") as Theme;
+  const ThemeIcon = themeIcon[currentTheme];
+  function cycleTheme() {
+    const idx = themeOrder.indexOf(currentTheme);
+    setTheme(themeOrder[(idx + 1) % themeOrder.length]);
+  }
 
   return (
     <SidebarMenu>
@@ -117,6 +142,18 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuItem>
                 <Bell />
                 Notifications
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  cycleTheme();
+                }}
+              >
+                <ThemeIcon />
+                <span className="flex-1">Theme</span>
+                <span className="text-xs text-muted-foreground">
+                  {themeLabel[currentTheme]}
+                </span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
