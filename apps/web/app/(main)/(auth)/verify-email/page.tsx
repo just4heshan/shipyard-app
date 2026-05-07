@@ -2,11 +2,11 @@ import { db } from "@shipyard/db";
 import { redirect } from "next/navigation";
 
 interface Props {
-  searchParams: Promise<{ token?: string; email?: string }>;
+  searchParams: Promise<{ token?: string; email?: string; callbackUrl?: string }>;
 }
 
 export default async function VerifyEmailPage({ searchParams }: Props) {
-  const { token, email } = await searchParams;
+  const { token, email, callbackUrl } = await searchParams;
 
   // Missing params — link is malformed
   if (!token || !email) {
@@ -55,7 +55,8 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
     }),
   ]);
 
-  redirect("/login?verified=true");
+  const cbParam = callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : "";
+  redirect(`/login?verified=true${cbParam}`);
 }
 
 // ─── Small helper — keeps JSX out of the verification logic above ─────────────
