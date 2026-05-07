@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ChevronsUpDown, Lock, Plus } from "lucide-react";
-import type { SubscriptionTier } from "@shipyard/db";
+import type { SubscriptionTier } from "@shipyard/db/enum";
 import { ORG_OWNER_LIMITS } from "@shipyard/api/config/plans";
 import {
   DropdownMenu,
@@ -19,9 +19,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@shipyard/ui/components/sidebar";
+import { useOrgStore } from "@/src/stores/org-store";
 import { CreateOrgDialog } from "./create-org-dialog";
-
-
 
 interface Org {
   id: string;
@@ -46,12 +45,22 @@ export function OrgSwitcher({
   ownedOrgCount: number;
 }) {
   const { isMobile } = useSidebar();
-  const [activeOrg, setActiveOrg] = React.useState(orgs[0]);
   const [createOrgOpen, setCreateOrgOpen] = React.useState(false);
 
-  if (!activeOrg) {
-    return null;
-  }
+  const { activeOrgId, setActiveOrgId } = useOrgStore();
+
+  // Initialize the store with the first org on mount (store starts as null)
+  React.useEffect(() => {
+    const firstOrg = orgs[0];
+    if (!activeOrgId && firstOrg) {
+      setActiveOrgId(firstOrg.id);
+    }
+  }, [activeOrgId, orgs, setActiveOrgId]);
+
+  // Derive the full org object from the store id; fall back to first org before store initializes
+  const activeOrg = orgs.find((o) => o.id === activeOrgId) ?? orgs[0];
+
+  if (!activeOrg) return null;
 
   return (
     <>
@@ -89,7 +98,7 @@ export function OrgSwitcher({
               {orgs.map((org, index) => (
                 <DropdownMenuItem
                   key={org.id}
-                  onClick={() => setActiveOrg(org)}
+                  onClick={() => setActiveOrgId(org.id)}
                   className="gap-2 p-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-md border bg-sidebar-primary text-sidebar-primary-foreground">

@@ -67,31 +67,42 @@ export function OrganizationCard({
   }
 
   return (
-    <Link href={`/org/${organization.id}`}>
-      <Card className="h-full transition-shadow hover:shadow-md">
-        <CardHeader>
-          <div className="flex items-start justify-between gap-2">
-            <CardTitle>{organization.name}</CardTitle>
-            <Badge variant={ROLE_VARIANT[role]}>{role}</Badge>
-          </div>
-          <CardDescription>/{organization.slug}</CardDescription>
-        </CardHeader>
+    <Card className="h-full transition-shadow hover:shadow-md">
+      <CardHeader>
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle>{organization.name}</CardTitle>
+          <Badge variant={ROLE_VARIANT[role]}>{role}</Badge>
+        </div>
+        <CardDescription>/{organization.slug}</CardDescription>
+      </CardHeader>
 
-        <CardContent className="flex gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1.5">
+      <CardContent className="flex gap-4 text-sm text-muted-foreground">
+        <span className="flex items-center gap-1.5">
+          <Users className="size-3.5" />
+          {organization._count.members} members
+        </span>
+        <span className="flex items-center gap-1.5">
+          <FolderKanban className="size-3.5" />
+          {organization._count.projects} projects
+        </span>
+      </CardContent>
+
+      <CardFooter className="flex items-center justify-between">
+        <Badge variant={TIER_VARIANT[organization.subscriptionTier]}>
+          {organization.subscriptionTier}
+        </Badge>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(`/org/${organization.id}/members`);
+            }}
+          >
             <Users className="size-3.5" />
-            {organization._count.members} members
-          </span>
-          <span className="flex items-center gap-1.5">
-            <FolderKanban className="size-3.5" />
-            {organization._count.projects} projects
-          </span>
-        </CardContent>
-
-        <CardFooter className="flex justify-between">
-          <Badge variant={TIER_VARIANT[organization.subscriptionTier]}>
-            {organization.subscriptionTier}
-          </Badge>
+            Members
+          </Button>
           {role === "OWNER" && (
             <Button
               variant="outline"
@@ -102,8 +113,8 @@ export function OrganizationCard({
               <Trash className="size-3.5 text-destructive" />
             </Button>
           )}
-        </CardFooter>
-      </Card>
-    </Link>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
