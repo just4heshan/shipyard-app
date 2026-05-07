@@ -33,6 +33,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@shipyard/ui/components/sidebar";
+import { userInitials } from "@/lib/userInitials";
 
 interface NavUserProps {
   user: {
@@ -40,18 +41,6 @@ interface NavUserProps {
     email?: string | null;
     image?: string | null;
   };
-}
-
-function userInitials(name?: string | null, email?: string | null): string {
-  if (name) {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  }
-  return email?.[0]?.toUpperCase() ?? "U";
 }
 
 const themeOrder = ["system", "light", "dark"] as const;
@@ -72,11 +61,13 @@ export function NavUser({ user }: NavUserProps) {
   const initials = userInitials(user.name, user.email);
   const { theme, setTheme } = useTheme();
 
-  const currentTheme = (themeOrder.includes(theme as Theme) ? theme : "system") as Theme;
+  const currentTheme = (
+    themeOrder.includes(theme as Theme) ? theme : "system"
+  ) as Theme;
   const ThemeIcon = themeIcon[currentTheme];
   function cycleTheme() {
     const idx = themeOrder.indexOf(currentTheme);
-    setTheme(themeOrder[(idx + 1) % themeOrder.length]);
+    setTheme(themeOrder[(idx + 1) % themeOrder.length]!);
   }
 
   return (
@@ -90,7 +81,9 @@ export function NavUser({ user }: NavUserProps) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
-                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -110,7 +103,9 @@ export function NavUser({ user }: NavUserProps) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
