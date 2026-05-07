@@ -40,10 +40,11 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  member   Member[]
-  password Password?
+  accounts        Account[]
+  sessions        Session[]
+  member          Member[]
+  password        Password?
+  sentInvitations Invitation[] @relation("SentInvitations")
 }
 
 // Separate from User so OAuth-only users have no row here.
