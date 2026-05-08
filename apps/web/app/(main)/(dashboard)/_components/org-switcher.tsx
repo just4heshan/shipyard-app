@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { ChevronsUpDown, Lock, Plus } from "lucide-react";
 import type { SubscriptionTier } from "@shipyard/db/enum";
 import { ORG_OWNER_LIMITS } from "@shipyard/api/config/plans";
@@ -46,8 +47,21 @@ export function OrgSwitcher({
 }) {
   const { isMobile } = useSidebar();
   const [createOrgOpen, setCreateOrgOpen] = React.useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const { activeOrgId, setActiveOrgId } = useOrgStore();
+
+  function handleOrgChange(orgId: string) {
+    setActiveOrgId(orgId);
+    // If currently on an org-scoped page, navigate to the same sub-page for the new org
+    const match = pathname.match(/^\/org\/[^/]+(\/.*)?$/);
+    console.log(match)
+    if (match) {
+      const subPath = match[1] ?? "";
+      router.push(`/org/${orgId}${subPath}`);
+    }
+  }
 
   // Initialize the store with the first org on mount (store starts as null)
   React.useEffect(() => {
@@ -98,7 +112,7 @@ export function OrgSwitcher({
               {orgs.map((org, index) => (
                 <DropdownMenuItem
                   key={org.id}
-                  onClick={() => setActiveOrgId(org.id)}
+                  onClick={() => handleOrgChange(org.id)}
                   className="gap-2 p-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-md border bg-sidebar-primary text-sidebar-primary-foreground">
