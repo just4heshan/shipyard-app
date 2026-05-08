@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import { Activity, LayoutDashboard, Settings, Users } from "lucide-react";
+import { Activity, FolderKanban, LayoutDashboard, Settings, Users } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -58,6 +58,18 @@ export function NavMain() {
           <SidebarGroupLabel>Organization</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith(`/${orgSlug}/projects`)}
+                  tooltip="Projects"
+                >
+                  <Link href={`/${orgSlug}/projects`}>
+                    <FolderKanban />
+                    <span>Projects</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
