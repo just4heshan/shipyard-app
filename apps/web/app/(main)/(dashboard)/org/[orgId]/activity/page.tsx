@@ -10,7 +10,7 @@ import { ActivityLogTable } from "./_components/activity-log-table";
 
 export const metadata: Metadata = { title: "Activity" };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 50;
 
 export default async function ActivityPage({
   params,

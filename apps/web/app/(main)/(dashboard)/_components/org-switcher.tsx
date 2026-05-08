@@ -56,7 +56,6 @@ export function OrgSwitcher({
     setActiveOrgId(orgId);
     // If currently on an org-scoped page, navigate to the same sub-page for the new org
     const match = pathname.match(/^\/org\/[^/]+(\/.*)?$/);
-    console.log(match)
     if (match) {
       const subPath = match[1] ?? "";
       router.push(`/org/${orgId}${subPath}`);
