@@ -44,6 +44,21 @@ function formatDetail(action: string, metadata: unknown): string {
       return `${m.email}`;
     case "ORG_CREATED":
       return `"${m.name}"`;
+    case "PROJECT_CREATED":
+    case "PROJECT_UPDATED":
+    case "PROJECT_ARCHIVED":
+    case "PROJECT_DELETED":
+      return m.name ? `"${m.name}"` : "—";
+    case "TASK_CREATED":
+    case "TASK_UPDATED":
+    case "TASK_ASSIGNED":
+    case "TASK_DELETED":
+      return m.title ? `"${m.title}"` : "—";
+    case "TASK_STATUS_UPDATED":
+      return m.title ? `"${m.title}": ${m.from} → ${m.to}` : "—";
+    case "COMMENT_CREATED":
+    case "COMMENT_DELETED":
+      return m.taskId ? `On task ${m.taskId.slice(0, 8)}…` : "—";
     default:
       return "—";
   }
