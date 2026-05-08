@@ -58,26 +58,7 @@ export async function AppSidebar() {
             image: session.user.image,
           }}
         />
-        {/* <div className="truncate px-2 py-1 text-xs text-sidebar-foreground/60">
-          {session?.user?.email}
-        </div>
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/login" });
-          }}
-        >
-          <Button
-            type="submit"
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start"
-          >
-            Logout
-          </Button>
-        </form> */}
       </SidebarFooter>
-
       <SidebarRail />
     </Sidebar>
   );
