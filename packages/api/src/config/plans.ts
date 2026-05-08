@@ -20,3 +20,13 @@ export const MEMBER_LIMITS = {
   PRO: 25,
   ENTERPRISE: Infinity,
 } as const;
+
+/**
+ * Maximum number of active projects per organization per tier.
+ * Update when billing is implemented.
+ */
+export const PROJECT_LIMITS = {
+  FREE: 1,
+  PRO: Infinity,
+  ENTERPRISE: Infinity,
+} as const;
