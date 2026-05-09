@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Clock, X } from "lucide-react";
 import { trpc } from "@/src/trpc/react";
+import { ConfirmDialog } from "@/src/components/confirm-dialog";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
 import type { MemberRole } from "@shipyard/db/enum";
@@ -31,13 +33,21 @@ export function PendingInvitations({
   invitations,
 }: PendingInvitationsProps) {
   const router = useRouter();
+  const [confirmInvId, setConfirmInvId] = useState<string | null>(null);
+
   const cancel = trpc.member.cancelInvitation.useMutation({
-    onSuccess: () => router.refresh(),
+    onSuccess: () => {
+      setConfirmInvId(null);
+      router.refresh();
+    },
   });
 
   if (invitations.length === 0) return null;
 
+  const confirmInv = invitations.find((i) => i.id === confirmInvId);
+
   return (
+    <>
     <section className="space-y-3">
       <h2 className="text-sm font-medium text-muted-foreground">
         Pending invitations ({invitations.length})
@@ -65,7 +75,7 @@ export function PendingInvitations({
               size="sm"
               className="size-8 p-0 text-muted-foreground hover:text-destructive"
               disabled={cancel.isPending}
-              onClick={() => cancel.mutate({ orgId, invitationId: inv.id })}
+              onClick={() => setConfirmInvId(inv.id)}
               title="Cancel invitation"
             >
               <X className="size-4" />
@@ -75,5 +85,19 @@ export function PendingInvitations({
         ))}
       </div>
     </section>
+
+    <ConfirmDialog
+      open={confirmInvId !== null}
+      onOpenChange={(open) => { if (!open) setConfirmInvId(null); }}
+      title="Cancel invitation"
+      description={`The invitation to ${confirmInv?.email ?? "this address"} will be cancelled.`}
+      confirmLabel="Cancel invitation"
+      pendingLabel="Cancelling…"
+      isPending={cancel.isPending}
+      onConfirm={() => {
+        if (confirmInvId) cancel.mutate({ orgId, invitationId: confirmInvId });
+      }}
+    />
+    </>
   );
 }

@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MoreHorizontal, ShieldCheck, Trash } from "lucide-react";
 import { trpc } from "@/src/trpc/react";
+import { ConfirmDialog } from "@/src/components/confirm-dialog";
 import {
   Avatar,
   AvatarFallback,
@@ -54,9 +56,13 @@ export function MemberList({
   callerRole,
 }: MemberListProps) {
   const router = useRouter();
+  const [confirmMemberId, setConfirmMemberId] = useState<string | null>(null);
 
   const removeMember = trpc.member.remove.useMutation({
-    onSuccess: () => router.refresh(),
+    onSuccess: () => {
+      setConfirmMemberId(null);
+      router.refresh();
+    },
   });
   const updateRole = trpc.member.updateRole.useMutation({
     onSuccess: () => router.refresh(),
@@ -64,7 +70,10 @@ export function MemberList({
 
   const canManage = callerRole === "OWNER" || callerRole === "ADMIN";
 
+  const confirmMember = members.find((m) => m.id === confirmMemberId);
+
   return (
+    <>
     <div className="divide-y divide-border rounded-lg border">
       {members.map((m) => {
         const isSelf = m.user.id === currentUserId;
@@ -146,9 +155,7 @@ export function MemberList({
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         variant="destructive"
-                        onSelect={() =>
-                          removeMember.mutate({ orgId, memberId: m.id })
-                        }
+                        onSelect={() => setConfirmMemberId(m.id)}
                       >
                         <Trash className="size-4" />
                         Remove member
@@ -162,5 +169,19 @@ export function MemberList({
         );
       })}
     </div>
+
+    <ConfirmDialog
+      open={confirmMemberId !== null}
+      onOpenChange={(open) => { if (!open) setConfirmMemberId(null); }}
+      title="Remove member"
+      description={`${confirmMember?.user.name ?? confirmMember?.user.email ?? "This member"} will be removed from the organization.`}
+      confirmLabel="Remove"
+      pendingLabel="Removing…"
+      isPending={removeMember.isPending}
+      onConfirm={() => {
+        if (confirmMemberId) removeMember.mutate({ orgId, memberId: confirmMemberId });
+      }}
+    />
+    </>
   );
 }
