@@ -31,13 +31,19 @@ export async function requireOrgMembership(
     select: {
       id: true,
       role: true,
-      organization: { select: { id: true, name: true, slug: true } },
+      organization: {
+        select: { id: true, name: true, slug: true, subscriptionTier: true },
+      },
     },
   });
   if (!member) redirect(redirects?.notMember ?? "/dashboard");
 
   return {
     session,
-    membership: { id: member.id, role: member.role, organization: member.organization },
+    membership: {
+      id: member.id,
+      role: member.role,
+      organization: member.organization,
+    },
   };
 }
