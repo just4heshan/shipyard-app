@@ -6,6 +6,7 @@ import { Separator } from "@shipyard/ui/components/separator";
 import { requireOrgMembership } from "@/server/requireOrgMembership";
 import { CreateProjectDialog } from "./_components/create-project-dialog";
 import { ProjectCard } from "./_components/project-card";
+import { PROJECT_LIMITS } from "@shipyard/api/config/plans";
 
 export const metadata: Metadata = { title: "Projects" };
 
@@ -37,6 +38,10 @@ export default async function ProjectsPage({
     orderBy: { createdAt: "desc" },
   });
 
+  const projectLimitReached =
+    canManage &&
+    projects.length >= PROJECT_LIMITS[organization.subscriptionTier];
+
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Back link */}
@@ -54,7 +59,12 @@ export default async function ProjectsPage({
           <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
           <p className="text-sm text-muted-foreground">{organization.name}</p>
         </div>
-        {canManage && <CreateProjectDialog orgId={orgId} />}
+        {canManage && (
+          <CreateProjectDialog
+            orgId={orgId}
+            projectLimitReached={projectLimitReached}
+          />
+        )}
       </div>
 
       <Separator />

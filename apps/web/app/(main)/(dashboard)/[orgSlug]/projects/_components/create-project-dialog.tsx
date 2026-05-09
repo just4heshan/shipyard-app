@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FolderPlus } from "lucide-react";
+import { FolderPlus, Lock } from "lucide-react";
 import { trpc } from "@/src/trpc/react";
 import { Button } from "@shipyard/ui/components/button";
 import { Input } from "@shipyard/ui/components/input";
@@ -20,9 +20,13 @@ import {
 
 interface CreateProjectDialogProps {
   orgId: string;
+  projectLimitReached: boolean;
 }
 
-export function CreateProjectDialog({ orgId }: CreateProjectDialogProps) {
+export function CreateProjectDialog({
+  orgId,
+  projectLimitReached,
+}: CreateProjectDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -49,12 +53,30 @@ export function CreateProjectDialog({ orgId }: CreateProjectDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <FolderPlus className="size-4" />
-          New project
-        </Button>
-      </DialogTrigger>
+      <span
+        title={
+          projectLimitReached
+            ? "You have reached the project limit. Upgrade to Pro to create more projects."
+            : undefined
+        }
+        className="inline-flex"
+      >
+        <DialogTrigger asChild>
+          <Button size="sm" disabled={projectLimitReached}>
+            {!projectLimitReached ? (
+              <>
+                <FolderPlus className="size-4" />
+                New project
+              </>
+            ) : (
+              <>
+                <Lock className="size-4" />
+                Upgrade to Pro
+              </>
+            )}
+          </Button>
+        </DialogTrigger>
+      </span>
 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
