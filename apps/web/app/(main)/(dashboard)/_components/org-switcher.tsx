@@ -65,13 +65,16 @@ export function OrgSwitcher({
     }
   }
 
-  // Initialize the store with the first org on mount (store starts as null)
+  // Initialize the store on mount: prefer the org slug already in the URL,
+  // fall back to orgs[0] only when the path doesn't match any known org.
   React.useEffect(() => {
-    const firstOrg = orgs[0];
-    if (!activeOrgSlug && firstOrg) {
-      setActiveOrgSlug(firstOrg.slug);
+    if (!activeOrgSlug) {
+      const slugFromPath = pathname.split("/")[1];
+      const orgFromPath = orgs.find((o) => o.slug === slugFromPath);
+      const fallback = orgFromPath ?? orgs[0];
+      if (fallback) setActiveOrgSlug(fallback.slug);
     }
-  }, [activeOrgSlug, orgs, setActiveOrgSlug]);
+  }, [activeOrgSlug, orgs, pathname, setActiveOrgSlug]);
 
   // Derive the full org object from the store slug; fall back to first org before store initializes
   const activeOrg = orgs.find((o) => o.slug === activeOrgSlug) ?? orgs[0];
