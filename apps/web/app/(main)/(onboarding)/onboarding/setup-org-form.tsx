@@ -7,12 +7,12 @@ import { trpc } from "@/src/trpc/react";
 import { Button } from "@shipyard/ui/components/button";
 import { Input } from "@shipyard/ui/components/input";
 import { Label } from "@shipyard/ui/components/label";
-import { toSlugPreview } from "@/lib/toSlugPreview";
+import { toSlug } from "@shipyard/api/lib/slug";
 
 export function SetupOrgForm() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const slug = toSlugPreview(name);
+  const slug = toSlug(name);
 
   const createOrg = trpc.organization.create.useMutation({
     onSuccess: () => router.push("/dashboard"),
