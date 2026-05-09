@@ -46,6 +46,7 @@ export function InviteMemberDialog({
   const [role, setRole] = useState<"OWNER" | "ADMIN" | "MEMBER" | "VIEWER">(
     "MEMBER",
   );
+  const canInvite = callerRole === "OWNER" || callerRole === "ADMIN";
 
   const assignableRoles =
     callerRole === "OWNER"
@@ -70,12 +71,14 @@ export function InviteMemberDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <UserPlus className="size-4" />
-          Invite member
-        </Button>
-      </DialogTrigger>
+      {canInvite && (
+        <DialogTrigger asChild>
+          <Button size="sm">
+            <UserPlus className="size-4" />
+            Invite member
+          </Button>
+        </DialogTrigger>
+      )}
 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
