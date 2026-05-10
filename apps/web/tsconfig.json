@@ -12,7 +12,9 @@
       "@shipyard/api/lib": ["../../packages/api/src/lib"],
       "@shipyard/email": ["../../packages/email"],
       "@shipyard/db": ["../../packages/db/src"],
-      "@shipyard/db/enum": ["../../packages/db/src/enum"]
+      "@shipyard/db/enum": ["../../packages/db/src/enum"],
+      "@shipyard/types": ["../../packages/types/src"],
+      "@shipyard/types/*": ["../../packages/types/src/*"]
     }
   },
   "include": [
