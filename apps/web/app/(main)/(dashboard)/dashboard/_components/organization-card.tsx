@@ -13,7 +13,7 @@ import { Badge } from "@shipyard/ui/components/badge";
 import { Users, FolderKanban, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@shipyard/ui/components/button";
-import { trpc } from "@/src/trpc/react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 // Derived from the Prisma select in dashboard/page.tsx — stays in sync automatically
 export type OrganizationCardProps = Prisma.MemberGetPayload<{

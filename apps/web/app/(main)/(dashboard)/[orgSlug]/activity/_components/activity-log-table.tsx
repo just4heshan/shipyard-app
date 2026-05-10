@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { trpc } from "@/src/trpc/react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 import {
   Avatar,
   AvatarFallback,

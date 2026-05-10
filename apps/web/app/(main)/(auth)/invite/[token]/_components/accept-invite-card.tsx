@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Building2 } from "lucide-react";
-import { trpc } from "@/src/trpc/react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 import { Button } from "@shipyard/ui/components/button";
 
 type MemberRole = "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";

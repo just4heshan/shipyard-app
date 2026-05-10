@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MoreHorizontal, ShieldCheck, Trash } from "lucide-react";
-import { trpc } from "@/src/trpc/react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 import { ConfirmDialog } from "@/src/components/confirm-dialog";
 import {
   Avatar,
