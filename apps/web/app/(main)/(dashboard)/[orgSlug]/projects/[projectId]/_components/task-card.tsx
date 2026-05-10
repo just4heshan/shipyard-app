@@ -6,9 +6,10 @@ import { CSS } from "@dnd-kit/utilities";
 import { CalendarDays } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@shipyard/ui/components/avatar";
 import { Badge } from "@shipyard/ui/components/badge";
-import type { KanbanTask, TaskPriority } from "@/src/stores/kanban-store";
 import { userInitials } from "@/lib/userInitials";
 import { TaskDetailSheet } from "./task-detail-sheet";
+
+import type {Task as KanbanTask, TaskPriority } from "@shipyard/types/task";
 
 const PRIORITY_VARIANT: Record<
   TaskPriority,
@@ -27,6 +28,7 @@ interface Member {
 
 interface TaskCardProps {
   task: KanbanTask;
+  projectId?: string;
   orgId?: string;
   callerRole?: string;
   currentMemberId?: string;
@@ -34,7 +36,7 @@ interface TaskCardProps {
   isDragging?: boolean;
 }
 
-export function TaskCard({ task, orgId = "", callerRole = "", currentMemberId = "", members = [], isDragging = false }: TaskCardProps) {
+export function TaskCard({ task, projectId = "", orgId = "", callerRole = "", currentMemberId = "", members = [], isDragging = false }: TaskCardProps) {
   const [detailOpen, setDetailOpen] = useState(false);
 
   const {
@@ -106,6 +108,7 @@ export function TaskCard({ task, orgId = "", callerRole = "", currentMemberId = 
 
       <TaskDetailSheet
         task={task}
+        projectId={projectId}
         orgId={orgId}
         callerRole={callerRole}
         currentMemberId={currentMemberId}

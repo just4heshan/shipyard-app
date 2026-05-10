@@ -6,7 +6,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { Plus } from "lucide-react";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
-import type { KanbanTask, TaskStatus } from "@/src/stores/kanban-store";
+import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
 import { TaskCard } from "./task-card";
 import { CreateTaskDialog } from "./create-task-dialog";
 
@@ -76,6 +76,7 @@ export function KanbanColumn({
             <TaskCard
               key={task.id}
               task={task}
+              projectId={projectId}
               orgId={orgId}
               callerRole={callerRole}
               currentMemberId={currentMemberId}

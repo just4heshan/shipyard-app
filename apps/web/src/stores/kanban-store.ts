@@ -1,22 +1,7 @@
 import { create } from "zustand";
+import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
 
-export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED";
-export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-
-export interface KanbanTask {
-  id: string;
-  title: string;
-  description: string | null;
-  status: TaskStatus;
-  priority: TaskPriority;
-  position: number;
-  dueDate: string | null;
-  createdAt: string;
-  assignee: {
-    id: string;
-    user: { name: string | null; image: string | null };
-  } | null;
-}
+/** Alias kept for backward compatibility with existing components. */
 
 interface KanbanStore {
   tasks: KanbanTask[];
@@ -33,8 +18,7 @@ export const useKanbanStore = create<KanbanStore>((set) => ({
 
   setTasks: (tasks) => set({ tasks }),
 
-  addTask: (task) =>
-    set((s) => ({ tasks: [...s.tasks, task] })),
+  addTask: (task) => set((s) => ({ tasks: [...s.tasks, task] })),
 
   updateTask: (taskId, changes) =>
     set((s) => ({
