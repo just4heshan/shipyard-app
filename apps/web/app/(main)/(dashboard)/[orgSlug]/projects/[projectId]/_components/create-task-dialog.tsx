@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { trpc } from "@/src/trpc/react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 import { useKanbanStore } from "@/src/stores/kanban-store";
-import type { TaskStatus } from "@/src/stores/kanban-store";
+import type { TaskStatus } from "@shipyard/types/task";
+import { useSocket } from "@/src/providers/socket-provider";
 import { Button } from "@shipyard/ui/components/button";
 import { Input } from "@shipyard/ui/components/input";
 import { Label } from "@shipyard/ui/components/label";
@@ -64,15 +65,18 @@ export function CreateTaskDialog({
   const [dueDate, setDueDate] = useState("");
 
   const { addTask } = useKanbanStore();
+  const { socket } = useSocket();
   const router = useRouter();
 
   const create = trpc.task.create.useMutation({
     onSuccess: (task) => {
-      addTask({
+      const shaped = {
         ...task,
         dueDate: task.dueDate as unknown as string | null,
         createdAt: task.createdAt as unknown as string,
-      });
+      };
+      addTask(shaped);
+      socket?.emit("task:created", { projectId, task: shaped });
       onOpenChange(false);
       setTitle("");
       setPriority("MEDIUM");
