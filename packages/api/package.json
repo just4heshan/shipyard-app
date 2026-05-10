@@ -16,6 +16,7 @@
   "devDependencies": {
     "@shipyard/testing": "workspace:*",
     "@shipyard/typescript-config": "*",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22",
     "typescript": "5.9.2",
     "vitest": "^4.1.5"
@@ -23,7 +24,9 @@
   "dependencies": {
     "@shipyard/email": "workspace:^",
     "@shipyard/logger": "workspace:*",
+    "@shipyard/types": "workspace:*",
     "@trpc/server": "^11.17.0",
+    "jsonwebtoken": "^9.0.3",
     "zod": "^4.4.1"
   }
 }

@@ -5,6 +5,7 @@ import { activityLogRouter } from "./activityLog";
 import { projectRouter } from "./project";
 import { taskRouter } from "./task";
 import { commentRouter } from "./comment";
+import { socketRouter } from "./socket";
 
 export const appRouter = router({
   organization: organizationRouter,
@@ -13,6 +14,7 @@ export const appRouter = router({
   project: projectRouter,
   task: taskRouter,
   comment: commentRouter,
+  socket: socketRouter,
 });
 
 export type AppRouter = typeof appRouter;
