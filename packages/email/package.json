@@ -3,16 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./templates/*": "./src/templates/*.tsx"
   },
   "devDependencies": {
     "@shipyard/typescript-config": "*",
     "@types/node": "^22",
     "@types/nodemailer": "^8.0.0",
+    "@types/react": "^19",
     "typescript": "5.9.2"
   },
   "dependencies": {
+    "@react-email/components": "^0.0.36",
+    "@shipyard/db": "workspace:*",
     "nodemailer": "^8.0.7",
+    "react": "^19",
     "resend": "^6.12.2"
+  },
+  "peerDependencies": {
+    "react": "^19"
   }
 }

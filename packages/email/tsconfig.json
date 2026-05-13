@@ -1,5 +1,5 @@
 {
-  "extends": "@shipyard/typescript-config/base.json",
+  "extends": "@shipyard/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"
