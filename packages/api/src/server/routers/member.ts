@@ -1,12 +1,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { sendEmail } from "@shipyard/email";
+import { sendEmail, renderInviteEmail } from "@shipyard/email";
 import { router, protectedProcedure } from "../trpc";
 import { logger } from "@shipyard/logger";
 import { MEMBER_LIMITS } from "../../config/plans";
 import { requireMembership, requireManagerRole } from "../../lib/membership";
 import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
-import type { MemberRole } from "@shipyard/db/enum";
 
 // ─── router ─────────────────────────────────────────────────────────────────
 
@@ -297,20 +296,27 @@ export const memberRouter = router({
 
       const inviterName =
         ctx.session.user.name ?? ctx.session.user.email ?? "Someone";
+      const inviterEmail = ctx.session.user.email ?? "";
       const baseUrl =
         process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
       const inviteUrl = `${baseUrl}/invite/${invitation.token}`;
 
+      const templateData = {
+        inviterName,
+        inviterEmail,
+        orgName: org.name,
+        role: input.role,
+        inviteUrl,
+        expiryDays: INVITE_EXPIRY_DAYS,
+      };
+
       await sendEmail({
         to: input.email,
         subject: `${inviterName} invited you to join ${org.name} on Shipyard`,
-        html: inviteEmailHtml({
-          inviterName,
-          orgName: org.name,
-          role: input.role,
-          inviteUrl,
-          expiryDays: INVITE_EXPIRY_DAYS,
-        }),
+        html: await renderInviteEmail(templateData),
+        templateName: "invite",
+        templateData,
+        db: ctx.db,
       });
 
       void logActivity({
@@ -440,55 +446,3 @@ export const memberRouter = router({
       return { orgId: invitation.organizationId };
     }),
 });
-
-// ─── email template ──────────────────────────────────────────────────────────
-
-function inviteEmailHtml({
-  inviterName,
-  orgName,
-  role,
-  inviteUrl,
-  expiryDays,
-}: {
-  inviterName: string;
-  orgName: string;
-  role: string;
-  inviteUrl: string;
-  expiryDays: number;
-}) {
-  const roleLabel = role.charAt(0) + role.slice(1).toLowerCase();
-  return `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f4f4f5;font-family:system-ui,-apple-system,sans-serif">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 16px">
-    <tr><td align="center">
-      <table width="100%" style="max-width:480px;background:#fff;border-radius:12px;border:1px solid #e4e4e7;overflow:hidden">
-        <!-- Header -->
-        <tr><td style="background:#18181b;padding:24px 32px">
-          <span style="color:#fafafa;font-size:18px;font-weight:600;letter-spacing:-0.3px">Shipyard</span>
-        </td></tr>
-        <!-- Body -->
-        <tr><td style="padding:32px">
-          <p style="margin:0 0 16px;font-size:15px;color:#3f3f46">
-            <strong>${inviterName}</strong> has invited you to join <strong>${orgName}</strong> on Shipyard as a <strong>${roleLabel}</strong>.
-          </p>
-          <p style="margin:0 0 24px;font-size:14px;color:#71717a">
-            Click the button below to accept. This invitation expires in ${expiryDays} days.
-          </p>
-          <a href="${inviteUrl}" style="display:inline-block;background:#18181b;color:#fafafa;font-size:14px;font-weight:500;padding:10px 20px;border-radius:8px;text-decoration:none">
-            Accept invitation
-          </a>
-        </td></tr>
-        <!-- Footer -->
-        <tr><td style="padding:16px 32px;border-top:1px solid #f4f4f5">
-          <p style="margin:0;font-size:12px;color:#a1a1aa">
-            If you weren't expecting this invitation, you can ignore this email.
-          </p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
-}
