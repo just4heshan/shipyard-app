@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { TRPCError } from "@trpc/server";
-import { requireManagerRole, requireContributorRole } from "./membership.js";
+import { requireManagerRole, requireContributorRole, requireOwner } from "./membership.js";
 
-// TDD exercise: these tests describe expected behaviour first.
+// TDD exercise: these tests describe expected behavior first.
 // Run them against the existing code to confirm everything passes.
 
 // ---------------------------------------------------------------------------
@@ -73,6 +73,38 @@ describe("requireContributorRole", () => {
   it("throws with code FORBIDDEN for VIEWER", () => {
     try {
       requireContributorRole("VIEWER");
+    } catch (err) {
+      expect(err).toBeInstanceOf(TRPCError);
+      expect((err as TRPCError).code).toBe("FORBIDDEN");
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// requireOwner
+// Rule: only OWNER can manage billing / subscription
+// ---------------------------------------------------------------------------
+
+describe("requireOwner", () => {
+  it("allows OWNER", () => {
+    expect(() => requireOwner("OWNER")).not.toThrow();
+  });
+
+  it("throws for ADMIN", () => {
+    expect(() => requireOwner("ADMIN")).toThrow(TRPCError);
+  });
+
+  it("throws for MEMBER", () => {
+    expect(() => requireOwner("MEMBER")).toThrow(TRPCError);
+  });
+
+  it("throws for VIEWER", () => {
+    expect(() => requireOwner("VIEWER")).toThrow(TRPCError);
+  });
+
+  it("throws with code FORBIDDEN, not UNAUTHORIZED", () => {
+    try {
+      requireOwner("ADMIN");
     } catch (err) {
       expect(err).toBeInstanceOf(TRPCError);
       expect((err as TRPCError).code).toBe("FORBIDDEN");

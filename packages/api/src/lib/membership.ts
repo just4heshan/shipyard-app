@@ -31,6 +31,16 @@ export function requireManagerRole(role: MemberRole) {
   }
 }
 
+/** Assert caller is OWNER. Used for billing and subscription management. */
+export function requireOwner(role: MemberRole | string) {
+  if (role !== "OWNER") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only organization owners can manage billing.",
+    });
+  }
+}
+
 /** Assert caller is at least MEMBER (blocks VIEWER). */
 export function requireContributorRole(role: MemberRole) {
   if (role === "VIEWER") {
