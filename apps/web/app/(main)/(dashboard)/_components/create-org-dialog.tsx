@@ -21,14 +21,11 @@ import { toSlug } from "@shipyard/api/lib/slug";
 interface CreateOrgDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** Pass true when the user has reached their plan's org ownership limit */
-  atLimit?: boolean;
 }
 
 export function CreateOrgDialog({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
-  atLimit = false,
 }: CreateOrgDialogProps = {}) {
   const router = useRouter();
   const [localOpen, setLocalOpen] = useState(false);
@@ -59,17 +56,8 @@ export function CreateOrgDialog({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       {/* Trigger only rendered in standalone mode (e.g. dashboard page) */}
       {!isControlled && (
-        <DialogTrigger asChild disabled={atLimit}>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={atLimit}
-            title={
-              atLimit
-                ? "Free plan is limited to 1 organization. Upgrade to Pro."
-                : undefined
-            }
-          >
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm">
             <Plus className="size-4" />
             New organization
           </Button>
