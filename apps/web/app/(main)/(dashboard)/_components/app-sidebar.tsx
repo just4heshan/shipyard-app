@@ -46,7 +46,7 @@ export async function AppSidebar() {
 
       {/* Nav items */}
       <SidebarContent>
-        <NavMain />
+        <NavMain memberships={memberships.map((m) => ({ role: m.role, orgSlug: m.organization.slug }))} />
       </SidebarContent>
 
       {/* Footer — user info + logout */}
