@@ -12,12 +12,13 @@ import {
 import { trpc } from "@/src/providers/trpc-react-provider";
 import { Button } from "@shipyard/ui/components/button";
 import { Badge } from "@shipyard/ui/components/badge";
-import { Progress } from "@shipyard/ui/components/progress";
 import { Separator } from "@shipyard/ui/components/separator";
 import { StripeCheckoutDialog } from "@/src/components/stripe-checkout-dialog";
 import { CancelPlanDialog } from "@/src/components/cancel-plan-dialog";
 import type { SubscriptionTier } from "@shipyard/db/enum";
 import { useRouter } from "next/navigation";
+import { formatPrice } from "@/lib/formatPrice";
+import { UsageMeter } from "./usage-meter";
 
 interface SubscriptionInfo {
   status: string;
@@ -50,47 +51,13 @@ interface BillingCardProps {
   };
 }
 
-function formatPrice(amount: number, currency: string, interval: string) {
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency.toUpperCase(),
-    minimumFractionDigits: amount % 100 === 0 ? 0 : 2,
-  }).format(amount / 100);
-  return `${formatted} / ${interval}`;
+interface StatusConfigValue {
+  label: string;
+  variant: "default" | "secondary" | "destructive" | "outline";
+  icon: React.ComponentType<{ className?: string }>;
 }
 
-interface SubscriptionInfo {
-  status: string;
-  currentPeriodEnd: string;
-  cancelAtPeriodEnd: boolean;
-}
-
-interface UsageStat {
-  used: number;
-  limit: number;
-}
-
-interface BillingCardProps {
-  orgId: string;
-  orgSlug: string;
-  orgName: string;
-  tier: SubscriptionTier;
-  isOwner: boolean;
-  subscription: SubscriptionInfo | null;
-  usage: {
-    projects: UsageStat;
-    members: UsageStat;
-  };
-}
-
-const STATUS_CONFIG: Record<
-  string,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-    icon: React.ComponentType<{ className?: string }>;
-  }
-> = {
+const STATUS_CONFIG: Record<string, StatusConfigValue> = {
   ACTIVE: { label: "Active", variant: "default", icon: CheckCircle },
   TRIALING: { label: "Trial", variant: "secondary", icon: Clock },
   PAST_DUE: { label: "Past due", variant: "destructive", icon: AlertTriangle },
@@ -99,46 +66,11 @@ const STATUS_CONFIG: Record<
   INCOMPLETE: { label: "Incomplete", variant: "outline", icon: Clock },
 };
 
-const DEFAULT_STATUS_CONFIG: {
-  label: string;
-  variant: "default" | "secondary" | "destructive" | "outline";
-  icon: React.ComponentType<{ className?: string }>;
-} = { label: "Incomplete", variant: "outline", icon: Clock };
-
-function UsageMeter({
-  label,
-  used,
-  limit,
-}: {
-  label: string;
-  used: number;
-  limit: number;
-}) {
-  const isUnlimited = limit === Infinity;
-  const pct = isUnlimited ? 0 : Math.min(100, Math.round((used / limit) * 100));
-  const isNearLimit = !isUnlimited && pct >= 80;
-
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">{label}</span>
-        <span
-          className={
-            isNearLimit ? "text-destructive font-medium" : "font-medium"
-          }
-        >
-          {isUnlimited ? `${used} / ∞` : `${used} / ${limit}`}
-        </span>
-      </div>
-      {!isUnlimited && (
-        <Progress
-          value={pct}
-          className={isNearLimit ? "h-1.5 [&>div]:bg-destructive" : "h-1.5"}
-        />
-      )}
-    </div>
-  );
-}
+const DEFAULT_STATUS_CONFIG: StatusConfigValue = {
+  label: "Incomplete",
+  variant: "outline",
+  icon: Clock,
+};
 
 export function BillingCard({
   orgId,
@@ -179,6 +111,12 @@ export function BillingCard({
     ? (STATUS_CONFIG[subscription.status] ?? DEFAULT_STATUS_CONFIG)
     : null;
 
+  const { formatted, interval } = formatPrice(
+    priceDetails?.amount ?? 0,
+    priceDetails?.currency ?? "USD",
+    priceDetails?.interval ?? "month",
+  );
+
   return (
     <div className="space-y-6">
       {/* Current plan */}
@@ -215,13 +153,7 @@ export function BillingCard({
               </div>
               {isPro ? (
                 <p className="text-sm text-muted-foreground">
-                  {priceDetails
-                    ? formatPrice(
-                        priceDetails.amount,
-                        priceDetails.currency,
-                        priceDetails.interval,
-                      )
-                    : "Pro plan"}
+                  {priceDetails ? `${formatted} / ${interval}` : "Pro plan"}
                 </p>
               ) : (
                 <p className="text-sm text-muted-foreground">$0 / month</p>
