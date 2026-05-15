@@ -7,13 +7,13 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from "@shipyard/ui/components/dialog";
 import { Button } from "@shipyard/ui/components/button";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Separator } from "@shipyard/ui/components/separator";
 import { StripeCheckoutDialog } from "./stripe-checkout-dialog";
+import { formatPrice } from "@/lib/formatPrice";
 
 export type PlanLimitType = "projects" | "members" | "orgs";
 
@@ -75,15 +75,6 @@ const ENTERPRISE_FEATURES = [
   "On-premise option",
 ];
 
-function formatPrice(amount: number, currency: string, interval: string) {
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency.toUpperCase(),
-    minimumFractionDigits: amount % 100 === 0 ? 0 : 2,
-  }).format(amount / 100);
-  return { formatted, interval };
-}
-
 export function UpgradeDialog({
   open,
   onOpenChange,
@@ -102,8 +93,6 @@ export function UpgradeDialog({
   const proPrice = proPlan
     ? formatPrice(proPlan.amount, proPlan.currency, proPlan.interval)
     : null;
-
-  console.log(proPrice);
 
   function handleProClick() {
     onOpenChange(false);
