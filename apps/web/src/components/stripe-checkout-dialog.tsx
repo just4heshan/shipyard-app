@@ -20,7 +20,6 @@ import {
 import { Button } from "@shipyard/ui/components/button";
 import { Separator } from "@shipyard/ui/components/separator";
 import { trpc } from "@/src/providers/trpc-react-provider";
-import { useRouter } from "next/navigation";
 
 const _key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = _key ? loadStripe(_key) : null;
@@ -75,7 +74,6 @@ function CheckoutForm({
 }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
 
@@ -121,7 +119,6 @@ function CheckoutForm({
 
     // Card saved — now create the subscription with that payment method
     activate.mutate({ orgId, setupIntentId: setupIntent.id });
-    router.refresh();
   }
 
   return (

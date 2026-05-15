@@ -313,6 +313,7 @@ export function BillingCard({
         onSuccess={() => {
           setCheckoutOpen(false);
           utils.subscription.get.invalidate({ orgId });
+          router.refresh();
         }}
       />
 
