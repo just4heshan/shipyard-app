@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -23,18 +24,6 @@ import { useRouter } from "next/navigation";
 
 const _key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = _key ? loadStripe(_key) : null;
-
-function useIsDarkTheme(): boolean {
-  const [isDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const theme = localStorage.getItem("theme");
-    if (theme === "dark") return true;
-    if (theme === "light") return false;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
-
-  return isDark;
-}
 
 function getStripeAppearance(isDark: boolean) {
   return {
@@ -196,7 +185,8 @@ export function StripeCheckoutDialog({
   onSuccess,
 }: StripeCheckoutDialogProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const isDark = useIsDarkTheme();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const createIntent = trpc.subscription.createSetupIntent.useMutation({
     onSuccess: ({ clientSecret: secret }) => setClientSecret(secret),
