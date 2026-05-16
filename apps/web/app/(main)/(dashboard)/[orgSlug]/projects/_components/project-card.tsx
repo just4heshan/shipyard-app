@@ -68,18 +68,21 @@ export function ProjectCard({
 
   return (
     <>
-      <Card className="group relative hover:shadow-md transition-shadow">
+      <Card className="group relative overflow-hidden hover:shadow-md transition-shadow">
+        {/* Subtle indigo grid background */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 40% 50%, rgba(99,102,241,0.09) 0%, transparent 65%)" }} />
         <CardHeader className="pb-2 flex flex-row items-start justify-between gap-2">
           <CardTitle className="text-base leading-tight">
             <Link
               href={`/${orgSlug}/projects/${project.id}`}
-              className="hover:underline"
+              className="hover:underline after:absolute after:inset-0"
             >
               {project.name}
             </Link>
           </CardTitle>
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="relative z-10 flex items-center gap-1.5 shrink-0">
             <Badge
               variant={STATUS_VARIANT[project.status]}
               className="text-xs capitalize"
@@ -93,7 +96,7 @@ export function ProjectCard({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="size-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="size-7 p-0 opacity-100 transition-opacity"
                   >
                     <MoreHorizontal className="size-4" />
                     <span className="sr-only">Project actions</span>
