@@ -21,12 +21,21 @@ export default function DashboardLayout({
             <SidebarTrigger className="-ml-1" />
           </header>
           <main
-            className="flex-1 p-6"
+            className="relative flex-1 p-6"
             style={{
               background:
                 "linear-gradient(to top, oklch(50.8% 0.118 165.612 / 0.04) 0%, transparent 60%)",
             }}
           >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage:
+                  "linear-gradient(rgba(0, 150, 137,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 150, 137,0.02) 1px, transparent 1px)",
+                backgroundSize: "5px 5px",
+              }}
+            />
             {children}
           </main>
         </SidebarInset>

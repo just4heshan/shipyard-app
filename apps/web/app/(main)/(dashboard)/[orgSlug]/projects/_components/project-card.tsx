@@ -69,7 +69,7 @@ export function ProjectCard({
   return (
     <>
       <Card className="group relative overflow-hidden hover:shadow-md transition-shadow">
-        {/* Subtle indigo grid background */}
+        {/* Subtle grid background */}
         <div
           style={{
             position: "absolute",

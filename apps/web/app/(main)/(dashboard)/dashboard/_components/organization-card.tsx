@@ -73,7 +73,7 @@ export function OrganizationCard({
 
   return (
     <Card className="group relative overflow-hidden h-full transition-shadow hover:shadow-md">
-      {/* Subtle indigo grid background */}
+      {/* Subtle grid background */}
       <div
         style={{
           position: "absolute",
