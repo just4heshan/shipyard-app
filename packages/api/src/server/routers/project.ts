@@ -175,6 +175,56 @@ export const projectRouter = router({
       return project;
     }),
 
+  unarchive: protectedProcedure
+    .input(z.object({ projectId: z.string(), orgId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const caller = await requireMembership(
+        ctx.db,
+        ctx.session.user.id,
+        input.orgId,
+      );
+      requireManagerRole(caller.role);
+      await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
+
+      // Unarchiving restores to ACTIVE — enforce the active project limit first
+      const org = await ctx.db.organization.findUnique({
+        where: { id: input.orgId },
+        select: { subscriptionTier: true },
+      });
+      if (!org) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const limit = PROJECT_LIMITS[org.subscriptionTier];
+      if (limit !== Infinity) {
+        const activeCount = await ctx.db.project.count({
+          where: { organizationId: input.orgId, status: { not: "ARCHIVED" } },
+        });
+        if (activeCount >= limit) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: `Cannot unarchive: you've reached the ${limit} active project limit for your plan. Archive another project first.`,
+          });
+        }
+      }
+
+      const project = await ctx.db.project.update({
+        where: { id: input.projectId },
+        data: { status: "ACTIVE" },
+        select: { id: true, name: true },
+      });
+
+      void logActivity({
+        db: ctx.db,
+        orgId: input.orgId,
+        memberId: caller.id,
+        action: ActivityAction.PROJECT_UNARCHIVED,
+        entityType: EntityType.PROJECT,
+        entityId: project.id,
+        metadata: { name: project.name },
+      });
+
+      return project;
+    }),
+
   delete: protectedProcedure
     .input(z.object({ projectId: z.string(), orgId: z.string() }))
     .mutation(async ({ ctx, input }) => {

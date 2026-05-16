@@ -48,6 +48,7 @@ function formatDetail(action: string, metadata: unknown): string {
     case "PROJECT_CREATED":
     case "PROJECT_UPDATED":
     case "PROJECT_ARCHIVED":
+    case "PROJECT_UNARCHIVED":
     case "PROJECT_DELETED":
       return m.name ? `"${m.name}"` : "—";
     case "TASK_CREATED":

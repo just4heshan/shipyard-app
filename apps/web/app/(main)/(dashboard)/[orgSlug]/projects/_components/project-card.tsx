@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MoreHorizontal, Archive, Trash2 } from "lucide-react";
+import { MoreHorizontal, Archive, ArchiveRestore, Trash2 } from "lucide-react";
 import { trpc } from "@/src/providers/trpc-react-provider";
 import { ConfirmDialog } from "@/src/components/confirm-dialog";
 import { Badge } from "@shipyard/ui/components/badge";
@@ -41,11 +41,11 @@ interface ProjectCardProps {
 
 const STATUS_VARIANT: Record<
   Project["status"],
-  "default" | "secondary" | "outline"
+  "default" | "secondary" | "warning"
 > = {
   ACTIVE: "default",
   COMPLETED: "secondary",
-  ARCHIVED: "outline",
+  ARCHIVED: "warning",
 };
 
 export function ProjectCard({
@@ -59,7 +59,12 @@ export function ProjectCard({
   const canManage = callerRole === "OWNER" || callerRole === "ADMIN";
   const canDelete = callerRole === "OWNER";
 
+  const isArchived = project.status === "ARCHIVED";
+
   const archive = trpc.project.archive.useMutation({
+    onSuccess: () => router.refresh(),
+  });
+  const unarchive = trpc.project.unarchive.useMutation({
     onSuccess: () => router.refresh(),
   });
   const remove = trpc.project.delete.useMutation({
@@ -68,7 +73,7 @@ export function ProjectCard({
 
   return (
     <>
-      <Card className="group relative overflow-hidden hover:shadow-md transition-shadow">
+      <Card className={`group relative overflow-hidden hover:shadow-md transition-shadow${isArchived ? " opacity-70 grayscale-30" : ""}`}>
         {/* Subtle grid background */}
         <div
           style={{
@@ -118,15 +123,27 @@ export function ProjectCard({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onSelect={() =>
-                      archive.mutate({ projectId: project.id, orgId })
-                    }
-                    disabled={archive.isPending}
-                  >
-                    <Archive className="size-4" />
-                    Archive
-                  </DropdownMenuItem>
+                  {isArchived ? (
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        unarchive.mutate({ projectId: project.id, orgId })
+                      }
+                      disabled={unarchive.isPending}
+                    >
+                      <ArchiveRestore className="size-4" />
+                      Unarchive
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        archive.mutate({ projectId: project.id, orgId })
+                      }
+                      disabled={archive.isPending}
+                    >
+                      <Archive className="size-4" />
+                      Archive
+                    </DropdownMenuItem>
+                  )}
                   {canDelete && (
                     <>
                       <DropdownMenuSeparator />
