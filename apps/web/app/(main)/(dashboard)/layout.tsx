@@ -31,6 +31,7 @@ export default function DashboardLayout({
               style={{
                 position: "absolute",
                 inset: 0,
+                pointerEvents: "none",
                 backgroundImage:
                   "linear-gradient(rgba(0, 150, 137,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 150, 137,0.02) 1px, transparent 1px)",
                 backgroundSize: "5px 5px",
