@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@shipyard/db";
 import { sendEmail, renderTaskAssignedEmail } from "@shipyard/email";
 import { router, protectedProcedure } from "../trpc";
@@ -65,7 +66,14 @@ export const taskRouter = router({
         input.orgId,
       );
       requireContributorRole(caller.role);
-      await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
+      const project = await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
+
+      if (project.status === "ARCHIVED") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot create tasks in an archived project.",
+        });
+      }
 
       // Place at end of the target column
       const last = await ctx.db.task.findFirst({

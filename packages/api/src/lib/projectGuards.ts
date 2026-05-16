@@ -12,11 +12,12 @@ export async function assertProjectBelongsToOrg(
 ) {
   const project = await db.project.findUnique({
     where: { id: projectId },
-    select: { organizationId: true },
+    select: { organizationId: true, status: true, name: true },
   });
   if (!project || project.organizationId !== orgId) {
     throw new TRPCError({ code: "NOT_FOUND", message: "Project not found." });
   }
+  return project;
 }
 
 /**
