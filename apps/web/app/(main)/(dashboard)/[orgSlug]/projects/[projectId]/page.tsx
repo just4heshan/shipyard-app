@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { db } from "@shipyard/db";
 import { requireOrgMembership } from "@/server/requireOrgMembership";
 import { KanbanBoard } from "./_components/kanban-board";
 import { ArchivedProjectBanner } from "./_components/archived-project-banner";
+import { ProjectHeader } from "./_components/project-header";
 
 export const metadata: Metadata = { title: "Board" };
 
@@ -64,19 +63,15 @@ export default async function ProjectBoardPage({
   return (
     <div className="flex flex-col gap-4 h-full">
       {/* Back link + header */}
-      <div className="space-y-1 shrink-0">
-        <Link
-          href={`/${orgSlug}/projects?${isArchived ? "archived=true" : ""}`}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="size-4" />
-          Projects
-        </Link>
-        <h1 className="text-xl font-bold tracking-tight">{project.name}</h1>
-        {project.description && (
-          <p className="text-sm text-muted-foreground">{project.description}</p>
-        )}
-      </div>
+      <ProjectHeader
+        projectId={projectId}
+        orgId={orgId}
+        orgSlug={orgSlug}
+        initialName={project.name}
+        initialDescription={project.description ?? null}
+        canManage={canManage}
+        isArchived={isArchived}
+      />
 
       {isArchived && (
         <ArchivedProjectBanner
