@@ -133,6 +133,8 @@ async function updateLog(
 }
 
 // Re-export templates so callers can import from one place
+export { renderVerifyEmail } from "./templates/verify-email";
+export type { VerifyEmailProps } from "./templates/verify-email";
 export { renderPaymentFailedEmail } from "./templates/payment-failed";
 export type { PaymentFailedEmailProps } from "./templates/payment-failed";
 export { renderInviteEmail } from "./templates/invite";

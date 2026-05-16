@@ -4,7 +4,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import { db } from "@shipyard/db";
-import { sendEmail } from "@shipyard/email";
+import { sendEmail, renderVerifyEmail } from "@shipyard/email";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -82,23 +82,14 @@ export async function register(
     const cbParam = callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : "";
     const verifyUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}&email=${encodeURIComponent(email)}${cbParam}`;
 
+    const html = await renderVerifyEmail({ name, verifyUrl });
     await sendEmail({
       to: email,
       subject: "Verify your Shipyard account",
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;">
-          <h2>Welcome to Shipyard, ${name}!</h2>
-          <p>Click the button below to verify your email. This link expires in 24 hours.</p>
-          <a href="${verifyUrl}"
-             style="display:inline-block;padding:12px 24px;background:#000;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">
-            Verify email
-          </a>
-          <p style="margin-top:24px;font-size:13px;color:#666;">
-            Or copy this link:<br/>
-            <a href="${verifyUrl}">${verifyUrl}</a>
-          </p>
-        </div>
-      `,
+      html,
+      templateName: "verify-email",
+      templateData: { email },
+      db,
     });
   } catch (err) {
     console.error("[register] unexpected error:", err);
