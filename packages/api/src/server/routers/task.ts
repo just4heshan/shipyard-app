@@ -1,4 +1,6 @@
 import { z } from "zod";
+import type { PrismaClient } from "@shipyard/db";
+import { sendEmail, renderTaskAssignedEmail } from "@shipyard/email";
 import { router, protectedProcedure } from "../trpc";
 import { requireMembership, requireManagerRole, requireContributorRole } from "../../lib/membership";
 import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
@@ -97,6 +99,18 @@ export const taskRouter = router({
         metadata: { title: task.title, projectId: input.projectId },
       });
 
+      if (input.assigneeId && input.assigneeId !== caller.id) {
+        void sendTaskAssignedEmail(ctx.db, {
+          projectId: input.projectId,
+          orgId: input.orgId,
+          assigneeId: input.assigneeId,
+          callerMemberId: caller.id,
+          task,
+        }).catch((err: unknown) =>
+          console.error("[task.create] failed to send task-assigned email:", err),
+        );
+      }
+
       return task;
     }),
 
@@ -159,6 +173,22 @@ export const taskRouter = router({
         entityId: input.taskId,
         metadata: { title: updated.title },
       });
+
+      if (
+        action === ActivityAction.TASK_ASSIGNED &&
+        input.assigneeId &&
+        input.assigneeId !== caller.id
+      ) {
+        void sendTaskAssignedEmail(ctx.db, {
+          projectId: existing.projectId,
+          orgId: input.orgId,
+          assigneeId: input.assigneeId,
+          callerMemberId: caller.id,
+          task: updated,
+        }).catch((err: unknown) =>
+          console.error("[task.update] failed to send task-assigned email:", err),
+        );
+      }
 
       return updated;
     }),
@@ -271,3 +301,65 @@ export const taskRouter = router({
       return { success: true };
     }),
 });
+
+// ─── Email helpers ────────────────────────────────────────────────────────────
+
+async function sendTaskAssignedEmail(
+  db: PrismaClient,
+  opts: {
+    projectId: string;
+    orgId: string;
+    assigneeId: string;
+    callerMemberId: string;
+    task: {
+      id: string;
+      title: string;
+      description: string | null;
+      priority: string;
+      dueDate: Date | null;
+    };
+  },
+) {
+  const [assignee, assigner, project] = await Promise.all([
+    db.member.findUnique({
+      where: { id: opts.assigneeId },
+      select: { user: { select: { email: true, name: true } } },
+    }),
+    db.member.findUnique({
+      where: { id: opts.callerMemberId },
+      select: { user: { select: { name: true } } },
+    }),
+    db.project.findUnique({
+      where: { id: opts.projectId },
+      select: { name: true, organization: { select: { name: true, slug: true } } },
+    }),
+  ]);
+
+  if (!assignee?.user.email || !project) return;
+
+  const assigneeName = assignee.user.name ?? assignee.user.email;
+  const assignerName = assigner?.user.name ?? "A teammate";
+  const baseUrl = process.env.NEXTAUTH_URL ?? "";
+  const taskUrl = `${baseUrl}/${project.organization.slug}/projects/${opts.projectId}`;
+
+  const html = await renderTaskAssignedEmail({
+    assigneeName,
+    assignerName,
+    taskTitle: opts.task.title,
+    taskDescription: opts.task.description,
+    priority: opts.task.priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+    projectName: project.name,
+    orgName: project.organization.name,
+    dueDate: opts.task.dueDate?.toISOString() ?? null,
+    taskUrl,
+  });
+
+  await sendEmail({
+    to: assignee.user.email,
+    subject: `You've been assigned: ${opts.task.title}`,
+    html,
+    templateName: "task-assigned",
+    templateData: { taskId: opts.task.id, orgId: opts.orgId },
+    db,
+  });
+}
