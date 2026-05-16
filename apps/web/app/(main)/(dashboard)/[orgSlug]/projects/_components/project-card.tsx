@@ -71,7 +71,7 @@ export function ProjectCard({
       <Card className="group relative overflow-hidden hover:shadow-md transition-shadow">
         {/* Subtle indigo grid background */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 40% 50%, rgba(99,102,241,0.09) 0%, transparent 65%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 40% 50%, rgba(99,102,241,0.25) 0%, transparent 75%)" }} />
         <CardHeader className="pb-2 flex flex-row items-start justify-between gap-2">
           <CardTitle className="text-base leading-tight">
             <Link
