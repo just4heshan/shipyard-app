@@ -11,7 +11,9 @@ export const activityLogRouter = router({
     .input(
       z.object({
         orgId: z.string(),
-        /** Filter to a specific entity type (e.g. "MEMBER", "INVITATION") */
+        /** Free-text search — matches member name or email */
+        search: z.string().optional(),
+        /** Filter to a specific entity type (e.g. "MEMBER", "PROJECT") */
         entityType: z.string().optional(),
         /** Cursor = last seen ActivityLog id, for keyset pagination */
         cursor: z.string().optional(),
@@ -30,6 +32,28 @@ export const activityLogRouter = router({
         where: {
           organizationId: input.orgId,
           ...(input.entityType ? { entityType: input.entityType } : {}),
+          ...(input.search
+            ? {
+                member: {
+                  user: {
+                    OR: [
+                      {
+                        name: {
+                          contains: input.search,
+                          mode: "insensitive",
+                        },
+                      },
+                      {
+                        email: {
+                          contains: input.search,
+                          mode: "insensitive",
+                        },
+                      },
+                    ],
+                  },
+                },
+              }
+            : {}),
         },
         cursor: input.cursor ? { id: input.cursor } : undefined,
         skip: input.cursor ? 1 : 0,

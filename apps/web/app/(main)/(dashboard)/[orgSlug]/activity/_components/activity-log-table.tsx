@@ -1,75 +1,21 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import { Search } from "lucide-react";
 import { trpc } from "@/src/providers/trpc-react-provider";
+import { DataTable } from "@shipyard/ui/components/data-table";
+import { Input } from "@shipyard/ui/components/input";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@shipyard/ui/components/avatar";
-import { Badge } from "@shipyard/ui/components/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@shipyard/ui/components/table";
-import { Spinner } from "@shipyard/ui/components/spinner";
-import { userInitials } from "@/lib/userInitials";
-import { ACTION_CONFIG, type ActivityLogItem } from "./types";
-import { ActivityLogDetail } from "./activity-log-detail";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shipyard/ui/components/select";
 import { Loader } from "@/src/components/loader";
-
-dayjs.extend(relativeTime);
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function formatDetail(action: string, metadata: unknown): string {
-  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata))
-    return "—";
-  const m = metadata as Record<string, string>;
-  switch (action) {
-    case "MEMBER_INVITED":
-      return `${m.email} as ${capitalize(m.role)}`;
-    case "MEMBER_REMOVED":
-      return `Was a ${capitalize(m.role)}`;
-    case "MEMBER_ROLE_UPDATED":
-      return `${capitalize(m.previousRole)} → ${capitalize(m.newRole)}`;
-    case "INVITATION_ACCEPTED":
-      return `Joined as ${capitalize(m.role)}`;
-    case "INVITATION_CANCELLED":
-      return `${m.email}`;
-    case "ORG_CREATED":
-      return `"${m.name}"`;
-    case "PROJECT_CREATED":
-    case "PROJECT_UPDATED":
-    case "PROJECT_ARCHIVED":
-    case "PROJECT_UNARCHIVED":
-    case "PROJECT_DELETED":
-      return m.name ? `"${m.name}"` : "—";
-    case "TASK_CREATED":
-    case "TASK_UPDATED":
-    case "TASK_ASSIGNED":
-    case "TASK_DELETED":
-      return m.title ? `"${m.title}"` : "—";
-    case "TASK_STATUS_UPDATED":
-      return m.title ? `"${m.title}": ${m.from} → ${m.to}` : "—";
-    case "COMMENT_CREATED":
-    case "COMMENT_DELETED":
-      return m.taskId ? `On task ${m.taskId.slice(0, 8)}…` : "—";
-    default:
-      return "—";
-  }
-}
-
-function capitalize(s: string | undefined): string {
-  if (!s) return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-}
+import { activityLogColumns } from "./columns";
+import { type ActivityLogItem } from "./types";
+import { ActivityLogDetail } from "./activity-log-detail";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -80,6 +26,17 @@ interface ActivityLogTableProps {
   pageSize: number;
 }
 
+// ─── Entity filter options ────────────────────────────────────────────────────
+
+const ENTITY_OPTIONS = [
+  { value: "ALL", label: "All activity" },
+  { value: "MEMBER", label: "Members" },
+  { value: "INVITATION", label: "Invitations" },
+  { value: "PROJECT", label: "Projects" },
+  { value: "TASK", label: "Tasks" },
+  { value: "COMMENT", label: "Comments" },
+] as const;
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function ActivityLogTable({
@@ -88,73 +45,140 @@ export function ActivityLogTable({
   initialCursor,
   pageSize,
 }: ActivityLogTableProps) {
+  // ── Items + pagination ──────────────────────────────────────────────────────
   const [allItems, setAllItems] = useState(initialItems);
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor);
-  const [fetchCursor, setFetchCursor] = useState<string | undefined>(undefined);
+
+  // ── Fetch control ───────────────────────────────────────────────────────────
+  // activeCursor: the cursor to use for the next fetch (undefined = first page)
+  // shouldFetch: gate that prevents the query from running automatically
+  const [activeCursor, setActiveCursor] = useState<string | undefined>(
+    undefined,
+  );
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  // ── Filters ─────────────────────────────────────────────────────────────────
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [entityType, setEntityType] = useState("ALL");
+
+  // ── UI state ────────────────────────────────────────────────────────────────
   const [selectedLog, setSelectedLog] = useState<ActivityLogItem | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const [tip, setTip] = useState<{ x: number; y: number; visible: boolean }>({
-    x: 0,
-    y: 0,
-    visible: false,
-  });
+  const [tip, setTip] = useState({ x: 0, y: 0, visible: false });
 
-  const handleRowMouseMove = useCallback((e: React.MouseEvent) => {
-    setTip({ x: e.clientX, y: e.clientY, visible: true });
-  }, []);
+  // ── Debounce search ─────────────────────────────────────────────────────────
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
-  const handleRowMouseLeave = useCallback(() => {
-    setTip((prev) => ({ ...prev, visible: false }));
-  }, []);
+  // ── Reset + re-fetch when filters change ────────────────────────────────────
+  // Skip on first render — initial items come from the server already.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setAllItems([]);
+    setNextCursor(null);
+    setActiveCursor(undefined);
+    setShouldFetch(true);
+  }, [debouncedSearch, entityType]);
 
-  const {
-    data: loadMoreData,
-    isFetching,
-    isError,
-  } = trpc.activityLog.list.useQuery(
-    { orgId, cursor: fetchCursor, limit: pageSize },
-    { enabled: fetchCursor !== undefined },
+  // ── tRPC query ──────────────────────────────────────────────────────────────
+  const { data, isFetching, isError } = trpc.activityLog.list.useQuery(
+    {
+      orgId,
+      cursor: activeCursor,
+      limit: pageSize,
+      search: debouncedSearch || undefined,
+      entityType: entityType === "ALL" ? undefined : entityType,
+    },
+    { enabled: shouldFetch },
   );
 
+  // ── Append loaded page ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (!loadMoreData) return;
+    if (!data) return;
     setAllItems((prev) => [
       ...prev,
-      ...loadMoreData.items.map((item) => ({
+      ...data.items.map((item) => ({
         ...item,
         metadata: item.metadata ?? {},
       })),
     ]);
-    setNextCursor(loadMoreData.nextCursor);
-    setFetchCursor(undefined);
-  }, [loadMoreData]);
+    setNextCursor(data.nextCursor);
+    setShouldFetch(false);
+  }, [data]);
 
-  // Infinite scroll — fire when sentinel enters the viewport
+  // ── Infinite scroll sentinel ────────────────────────────────────────────────
+  // rootMargin: "300px" fires ~300px before the sentinel enters the viewport,
+  // so the next page loads before the user reaches the end of the list.
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting && nextCursor && !isFetching) {
-          setFetchCursor(nextCursor);
+        if (entry?.isIntersecting && nextCursor && !isFetching && !shouldFetch) {
+          setActiveCursor(nextCursor);
+          setShouldFetch(true);
         }
       },
-      { threshold: 0.1 },
+      { rootMargin: "300px", threshold: 0 },
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [nextCursor, isFetching]);
+  }, [nextCursor, isFetching, shouldFetch]);
 
-  if (allItems.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        No activity yet. Actions like inviting members or changing roles will
-        appear here.
-      </p>
-    );
-  }
+  // ── Cursor-following tooltip handlers ───────────────────────────────────────
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    setTip({ x: e.clientX, y: e.clientY, visible: true });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setTip((prev) => ({ ...prev, visible: false }));
+  }, []);
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  const toolbar = (
+    <>
+      <div className="relative">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+        <Input
+          placeholder="Search by member…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-8 w-56"
+        />
+      </div>
+      <Select value={entityType} onValueChange={setEntityType}>
+        <SelectTrigger className="w-40">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {ENTITY_OPTIONS.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </>
+  );
+
+  const emptyState = isFetching ? (
+    <Loader message="Loading…" size={4} />
+  ) : (
+    <span>
+      {search || entityType !== "ALL"
+        ? "No matching activity."
+        : "No activity yet. Actions like inviting members or changing roles will appear here."}
+    </span>
+  );
 
   return (
     <div className="space-y-4">
@@ -167,84 +191,21 @@ export function ActivityLogTable({
           Click for more details
         </div>
       )}
-      <div className="rounded-lg border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Who</TableHead>
-              <TableHead>Action</TableHead>
-              <TableHead>Details</TableHead>
-              <TableHead className="text-right">When</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {allItems.map((log) => {
-              const config = ACTION_CONFIG[log.action];
-              const Icon = config?.icon;
-              return (
-                <TableRow
-                  key={log.id}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedLog(log)}
-                  onMouseMove={handleRowMouseMove}
-                  onMouseLeave={handleRowMouseLeave}
-                >
-                  {/* Who */}
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-7 w-7 rounded-md shrink-0">
-                        <AvatarImage
-                          src={log.member.user.image ?? ""}
-                          alt={log.member.user.name ?? ""}
-                        />
-                        <AvatarFallback className="rounded-md text-xs">
-                          {userInitials(
-                            log.member.user.name,
-                            log.member.user.email,
-                          )}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium leading-tight">
-                          {log.member.user.name ?? log.member.user.email}
-                        </p>
-                        {log.member.user.name && (
-                          <p className="truncate text-xs text-muted-foreground">
-                            {log.member.user.email}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </TableCell>
 
-                  {/* Action */}
-                  <TableCell>
-                    <Badge variant="secondary" className="gap-1.5 font-normal">
-                      {Icon && <Icon className="size-3" />}
-                      {config?.label ?? log.action}
-                    </Badge>
-                  </TableCell>
-
-                  {/* Details */}
-                  <TableCell className="text-sm text-muted-foreground">
-                    {formatDetail(log.action, log.metadata)}
-                  </TableCell>
-
-                  {/* When */}
-                  <TableCell className="text-right text-sm text-muted-foreground whitespace-nowrap">
-                    {dayjs(log.createdAt).fromNow()}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+      <div onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+        <DataTable
+          columns={activityLogColumns}
+          data={allItems}
+          toolbar={toolbar}
+          emptyState={emptyState}
+          onRowClick={setSelectedLog}
+        />
       </div>
 
-      {/* Sentinel — observed by IntersectionObserver to trigger next page load */}
-      <div ref={sentinelRef} className="py-2 flex justify-center">
-        {isFetching && (
-          <Loader message="Loading..." size={4} />
+      {/* Sentinel — IntersectionObserver fires 300px before this enters view */}
+      <div ref={sentinelRef} className="flex justify-center py-1">
+        {isFetching && allItems.length > 0 && (
+          <Loader message="Loading…" size={4} />
         )}
         {isError && (
           <p className="text-sm text-destructive">
