@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch --require dotenv/config src/index.ts",
-    "build": "tsc",
+    "build": "tsup",
+    "check-types": "tsc --noEmit",
     "start": "node dist/index.js"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^22",
+    "tsup": "^8.5.1",
     "tsx": "^4.19.1",
     "typescript": "5.9.2"
   }
