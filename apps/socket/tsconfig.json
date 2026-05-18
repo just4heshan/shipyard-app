@@ -8,8 +8,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "noUncheckedIndexedAccess": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
     "paths": {
       "@shipyard/db": ["../../packages/db/src"],
       "@shipyard/logger": ["../../packages/logger/src"],
