@@ -1,8 +1,8 @@
 "use client";
 
 import type { PresenceUser } from "@shipyard/types/socket";
-import { userInitials } from "@/lib/userInitials";
 import Image from "next/image";
+import { userInitials } from "@/lib/userInitials";
 
 interface PresenceAvatarsProps {
   users: PresenceUser[];

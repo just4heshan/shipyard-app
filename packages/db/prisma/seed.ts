@@ -38,12 +38,12 @@ const { STRIPE_SECRET_KEY, STRIPE_PRO_PRICE_ID } = process.env;
 
 if (!STRIPE_SECRET_KEY) {
   throw new Error(
-    "STRIPE_SECRET_KEY missing — add it to packages/db/.env or apps/web/.env.local",
+    "STRIPE_SECRET_KEY missing — add it to packages/db/.env or apps/web/.env.local"
   );
 }
 if (!STRIPE_PRO_PRICE_ID) {
   throw new Error(
-    "STRIPE_PRO_PRICE_ID missing — add it to packages/db/.env or apps/web/.env.local",
+    "STRIPE_PRO_PRICE_ID missing — add it to packages/db/.env or apps/web/.env.local"
   );
 }
 
@@ -63,8 +63,7 @@ const DEMO_PASSWORD = "Demo1234!";
 // ── Date helpers ──────────────────────────────────────────────────────────────
 const daysFromNow = (n: number) =>
   new Date(Date.now() + n * 24 * 60 * 60 * 1000);
-const daysAgo = (n: number) =>
-  new Date(Date.now() - n * 24 * 60 * 60 * 1000);
+const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type WithId = { id: string };
@@ -100,7 +99,7 @@ async function main() {
   const stripeData = await setupStripe(
     "Horizon Labs",
     jordan.email!,
-    STRIPE_PRO_PRICE_ID!,
+    STRIPE_PRO_PRICE_ID!
   );
   console.log("  ✓ Stripe");
 
@@ -216,63 +215,64 @@ async function main() {
   console.log("  ✓ Teams");
 
   // 8. Projects ──────────────────────────────────────────────────────────────
-  const [analytics, portal, pipeline, q3Sprint, legacy, sdk] = await Promise.all([
-    // Horizon Labs — active projects
-    prisma.project.create({
-      data: {
-        organizationId: horizon.id,
-        name: "Analytics Dashboard",
-        description:
-          "Real-time SaaS analytics — custom widgets, D3 charts, multi-source data connectors",
-        status: ProjectStatus.ACTIVE,
-        teams: { create: [{ teamId: engTeam.id }] },
-      },
-    }),
-    prisma.project.create({
-      data: {
-        organizationId: horizon.id,
-        name: "Customer Portal",
-        description:
-          "Self-serve portal — billing management, support tickets, onboarding flows",
-        status: ProjectStatus.ACTIVE,
-      },
-    }),
-    prisma.project.create({
-      data: {
-        organizationId: horizon.id,
-        name: "Data Pipeline v2",
-        description:
-          "Event ingestion overhaul — TypeScript ETL, schema validation, dead-letter queue",
-        status: ProjectStatus.ACTIVE,
-      },
-    }),
-    // Horizon Labs — historical
-    prisma.project.create({
-      data: {
-        organizationId: horizon.id,
-        name: "Q3 Launch Sprint",
-        description: "Q3 product launch — completed October 2025",
-        status: ProjectStatus.COMPLETED,
-      },
-    }),
-    prisma.project.create({
-      data: {
-        organizationId: horizon.id,
-        name: "Legacy CRM Migration",
-        description: "v1 data warehouse migration to PostgreSQL — archived",
-        status: ProjectStatus.ARCHIVED,
-      },
-    }),
-    // Reef Digital (FREE tier) — single project
-    prisma.project.create({
-      data: {
-        organizationId: reef.id,
-        name: "Open Source SDK",
-        description: "TypeScript SDK for the Reef Digital public API",
-        status: ProjectStatus.ACTIVE,
-      },
-    }),
-  ]);
+  const [analytics, portal, pipeline, q3Sprint, legacy, sdk] =
+    await Promise.all([
+      // Horizon Labs — active projects
+      prisma.project.create({
+        data: {
+          organizationId: horizon.id,
+          name: "Analytics Dashboard",
+          description:
+            "Real-time SaaS analytics — custom widgets, D3 charts, multi-source data connectors",
+          status: ProjectStatus.ACTIVE,
+          teams: { create: [{ teamId: engTeam.id }] },
+        },
+      }),
+      prisma.project.create({
+        data: {
+          organizationId: horizon.id,
+          name: "Customer Portal",
+          description:
+            "Self-serve portal — billing management, support tickets, onboarding flows",
+          status: ProjectStatus.ACTIVE,
+        },
+      }),
+      prisma.project.create({
+        data: {
+          organizationId: horizon.id,
+          name: "Data Pipeline v2",
+          description:
+            "Event ingestion overhaul — TypeScript ETL, schema validation, dead-letter queue",
+          status: ProjectStatus.ACTIVE,
+        },
+      }),
+      // Horizon Labs — historical
+      prisma.project.create({
+        data: {
+          organizationId: horizon.id,
+          name: "Q3 Launch Sprint",
+          description: "Q3 product launch — completed October 2025",
+          status: ProjectStatus.COMPLETED,
+        },
+      }),
+      prisma.project.create({
+        data: {
+          organizationId: horizon.id,
+          name: "Legacy CRM Migration",
+          description: "v1 data warehouse migration to PostgreSQL — archived",
+          status: ProjectStatus.ARCHIVED,
+        },
+      }),
+      // Reef Digital (FREE tier) — single project
+      prisma.project.create({
+        data: {
+          organizationId: reef.id,
+          name: "Open Source SDK",
+          description: "TypeScript SDK for the Reef Digital public API",
+          status: ProjectStatus.ACTIVE,
+        },
+      }),
+    ]);
   console.log("  ✓ Projects");
 
   // 9. Tasks ─────────────────────────────────────────────────────────────────
@@ -329,7 +329,7 @@ async function createUser(
   name: string,
   email: string,
   hash: string,
-  bgColor: string,
+  bgColor: string
 ) {
   const initials = name
     .split(" ")
@@ -350,7 +350,7 @@ async function createUser(
 async function setupStripe(
   orgName: string,
   ownerEmail: string,
-  priceId: string,
+  priceId: string
 ) {
   const customer = await stripe.customers.create({
     name: orgName,
@@ -719,7 +719,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.aliceH.id,
-        title: "Audit legacy CRM data schema and document field mappings to new model",
+        title:
+          "Audit legacy CRM data schema and document field mappings to new model",
         status: TaskStatus.DONE,
         priority: Priority.HIGH,
         position: 0,
@@ -728,7 +729,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.bobH.id,
-        title: "Write ETL extraction scripts for contacts, accounts, and opportunity records",
+        title:
+          "Write ETL extraction scripts for contacts, accounts, and opportunity records",
         status: TaskStatus.DONE,
         priority: Priority.HIGH,
         position: 1,
@@ -737,7 +739,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.aliceH.id,
-        title: "Transform and normalise 480 000 contact records into target schema",
+        title:
+          "Transform and normalise 480 000 contact records into target schema",
         status: TaskStatus.DONE,
         priority: Priority.URGENT,
         position: 2,
@@ -746,7 +749,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.bobH.id,
-        title: "Data validation suite — reconcile row counts and null-rate thresholds",
+        title:
+          "Data validation suite — reconcile row counts and null-rate thresholds",
         status: TaskStatus.DONE,
         priority: Priority.HIGH,
         position: 3,
@@ -755,7 +759,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.jordanH.id,
-        title: "Parallel-run both systems and diff daily transaction outputs for 2 weeks",
+        title:
+          "Parallel-run both systems and diff daily transaction outputs for 2 weeks",
         status: TaskStatus.DONE,
         priority: Priority.URGENT,
         position: 4,
@@ -764,7 +769,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.aliceH.id,
-        title: "Train sales team on new CRM workflows and self-service reporting",
+        title:
+          "Train sales team on new CRM workflows and self-service reporting",
         status: TaskStatus.DONE,
         priority: Priority.MEDIUM,
         position: 5,
@@ -773,7 +779,8 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
       {
         projectId,
         assigneeId: m.jordanH.id,
-        title: "Hard cutover execution — redirect all integrations to new CRM endpoints",
+        title:
+          "Hard cutover execution — redirect all integrations to new CRM endpoints",
         status: TaskStatus.DONE,
         priority: Priority.URGENT,
         position: 6,
@@ -792,10 +799,7 @@ async function seedLegacyTasks(projectId: string, m: HorizonMembers) {
   });
 }
 
-async function seedSdkTasks(
-  projectId: string,
-  m: { jordanR: WithId },
-) {
+async function seedSdkTasks(projectId: string, m: { jordanR: WithId }) {
   await prisma.task.createMany({
     data: [
       // TODO
@@ -843,7 +847,7 @@ async function seedSdkTasks(
 // ── Comments: realistic discussion threads on IN_PROGRESS tasks ───────────────
 async function seedComments(
   inProgressTasks: { id: string }[],
-  m: HorizonMembers,
+  m: HorizonMembers
 ) {
   const [datePickerTask, ga4Task] = inProgressTasks;
 
@@ -1067,7 +1071,10 @@ async function seedActivityLogs(ctx: {
         action: "task_assigned",
         entityType: "Task",
         entityId: "analytics-task-auth",
-        metadata: { title: "User authentication with SSO support", assignee: "Alice Harper" },
+        metadata: {
+          title: "User authentication with SSO support",
+          assignee: "Alice Harper",
+        },
         createdAt: daysAgo(65),
       },
       {
@@ -1076,7 +1083,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "analytics-task-auth",
-        metadata: { title: "User authentication with SSO support", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "User authentication with SSO support",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(63),
       },
       {
@@ -1085,7 +1096,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "analytics-task-auth",
-        metadata: { title: "User authentication with SSO support", from: "IN_PROGRESS", to: "DONE" },
+        metadata: {
+          title: "User authentication with SSO support",
+          from: "IN_PROGRESS",
+          to: "DONE",
+        },
         createdAt: daysAgo(58),
       },
       {
@@ -1094,7 +1109,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "analytics-task-ga4",
-        metadata: { title: "Integrate GA4 real-time events API", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Integrate GA4 real-time events API",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(55),
       },
       {
@@ -1103,7 +1122,10 @@ async function seedActivityLogs(ctx: {
         action: "comment_added",
         entityType: "Task",
         entityId: "analytics-task-ga4",
-        metadata: { preview: "GA4 API OAuth verification adds ~2 days to the timeline — flagging early" },
+        metadata: {
+          preview:
+            "GA4 API OAuth verification adds ~2 days to the timeline — flagging early",
+        },
         createdAt: daysAgo(50),
       },
       {
@@ -1112,7 +1134,11 @@ async function seedActivityLogs(ctx: {
         action: "task_priority_changed",
         entityType: "Task",
         entityId: "analytics-task-ga4",
-        metadata: { title: "Integrate GA4 real-time events API", from: "MEDIUM", to: "HIGH" },
+        metadata: {
+          title: "Integrate GA4 real-time events API",
+          from: "MEDIUM",
+          to: "HIGH",
+        },
         createdAt: daysAgo(48),
       },
       {
@@ -1130,7 +1156,10 @@ async function seedActivityLogs(ctx: {
         action: "task_assigned",
         entityType: "Task",
         entityId: "analytics-task-datepicker",
-        metadata: { title: "Build custom date range picker component", assignee: "Bob Martin" },
+        metadata: {
+          title: "Build custom date range picker component",
+          assignee: "Bob Martin",
+        },
         createdAt: daysAgo(10),
       },
       {
@@ -1139,7 +1168,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "analytics-task-datepicker",
-        metadata: { title: "Build custom date range picker component", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Build custom date range picker component",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(7),
       },
       {
@@ -1148,7 +1181,10 @@ async function seedActivityLogs(ctx: {
         action: "comment_added",
         entityType: "Task",
         entityId: "analytics-task-datepicker",
-        metadata: { preview: "Use the existing design token set for the calendar — Figma link in Notion" },
+        metadata: {
+          preview:
+            "Use the existing design token set for the calendar — Figma link in Notion",
+        },
         createdAt: daysAgo(5),
       },
       // ── Horizon Labs: Customer Portal lifecycle ───────────────────────────
@@ -1167,7 +1203,9 @@ async function seedActivityLogs(ctx: {
         action: "task_created",
         entityType: "Task",
         entityId: "portal-task-billing",
-        metadata: { title: "Self-serve subscription upgrade and downgrade flow" },
+        metadata: {
+          title: "Self-serve subscription upgrade and downgrade flow",
+        },
         createdAt: daysAgo(58),
       },
       {
@@ -1176,7 +1214,9 @@ async function seedActivityLogs(ctx: {
         action: "task_created",
         entityType: "Task",
         entityId: "portal-task-support",
-        metadata: { title: "In-app support ticket creation with file attachments" },
+        metadata: {
+          title: "In-app support ticket creation with file attachments",
+        },
         createdAt: daysAgo(57),
       },
       {
@@ -1185,7 +1225,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "portal-task-billing",
-        metadata: { title: "Self-serve subscription upgrade flow", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Self-serve subscription upgrade flow",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(45),
       },
       {
@@ -1194,7 +1238,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "portal-task-support",
-        metadata: { title: "In-app support ticket creation", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "In-app support ticket creation",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(40),
       },
       {
@@ -1203,7 +1251,10 @@ async function seedActivityLogs(ctx: {
         action: "comment_added",
         entityType: "Task",
         entityId: "portal-task-support",
-        metadata: { preview: "File size limit set to 10 MB per attachment, max 5 files per ticket" },
+        metadata: {
+          preview:
+            "File size limit set to 10 MB per attachment, max 5 files per ticket",
+        },
         createdAt: daysAgo(12),
       },
       // ── Horizon Labs: Data Pipeline v2 lifecycle ──────────────────────────
@@ -1231,7 +1282,10 @@ async function seedActivityLogs(ctx: {
         action: "task_assigned",
         entityType: "Task",
         entityId: "pipeline-task-ingestion",
-        metadata: { title: "Event ingestion REST API with rate limiting", assignee: "Alice Harper" },
+        metadata: {
+          title: "Event ingestion REST API with rate limiting",
+          assignee: "Alice Harper",
+        },
         createdAt: daysAgo(49),
       },
       {
@@ -1240,7 +1294,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "pipeline-task-ingestion",
-        metadata: { title: "Event ingestion REST API with rate limiting", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Event ingestion REST API with rate limiting",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(20),
       },
       // ── Horizon Labs: Q3 Launch Sprint (COMPLETED) ────────────────────────
@@ -1268,7 +1326,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "q3-task-beta",
-        metadata: { title: "Soft launch to beta user cohort", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Soft launch to beta user cohort",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(65),
       },
       {
@@ -1277,7 +1339,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "q3-task-beta",
-        metadata: { title: "Soft launch to beta user cohort", from: "IN_PROGRESS", to: "DONE" },
+        metadata: {
+          title: "Soft launch to beta user cohort",
+          from: "IN_PROGRESS",
+          to: "DONE",
+        },
         createdAt: daysAgo(55),
       },
       {
@@ -1305,7 +1371,9 @@ async function seedActivityLogs(ctx: {
         action: "task_created",
         entityType: "Task",
         entityId: "legacy-task-schema",
-        metadata: { title: "Audit legacy CRM data schema and document field mappings" },
+        metadata: {
+          title: "Audit legacy CRM data schema and document field mappings",
+        },
         createdAt: daysAgo(128),
       },
       {
@@ -1314,7 +1382,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "legacy-task-schema",
-        metadata: { title: "Audit legacy CRM data schema", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Audit legacy CRM data schema",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(122),
       },
       {
@@ -1323,7 +1395,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "legacy-task-schema",
-        metadata: { title: "Audit legacy CRM data schema", from: "IN_PROGRESS", to: "DONE" },
+        metadata: {
+          title: "Audit legacy CRM data schema",
+          from: "IN_PROGRESS",
+          to: "DONE",
+        },
         createdAt: daysAgo(118),
       },
       {
@@ -1332,7 +1408,10 @@ async function seedActivityLogs(ctx: {
         action: "task_created",
         entityType: "Task",
         entityId: "legacy-task-cutover",
-        metadata: { title: "Hard cutover execution — redirect all integrations to new CRM" },
+        metadata: {
+          title:
+            "Hard cutover execution — redirect all integrations to new CRM",
+        },
         createdAt: daysAgo(115),
       },
       {
@@ -1341,7 +1420,11 @@ async function seedActivityLogs(ctx: {
         action: "task_priority_changed",
         entityType: "Task",
         entityId: "legacy-task-cutover",
-        metadata: { title: "Hard cutover execution", from: "HIGH", to: "URGENT" },
+        metadata: {
+          title: "Hard cutover execution",
+          from: "HIGH",
+          to: "URGENT",
+        },
         createdAt: daysAgo(90),
       },
       {
@@ -1350,7 +1433,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "legacy-task-cutover",
-        metadata: { title: "Hard cutover execution", from: "IN_PROGRESS", to: "DONE" },
+        metadata: {
+          title: "Hard cutover execution",
+          from: "IN_PROGRESS",
+          to: "DONE",
+        },
         createdAt: daysAgo(75),
       },
       {
@@ -1359,7 +1446,11 @@ async function seedActivityLogs(ctx: {
         action: "project_status_changed",
         entityType: "Project",
         entityId: legacyId,
-        metadata: { name: "Legacy CRM Migration", from: "ACTIVE", to: "ARCHIVED" },
+        metadata: {
+          name: "Legacy CRM Migration",
+          from: "ACTIVE",
+          to: "ARCHIVED",
+        },
         createdAt: daysAgo(70),
       },
       // ── Reef Digital: org bootstrapping ──────────────────────────────────
@@ -1406,7 +1497,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "sdk-task-core",
-        metadata: { title: "Core SDK client with plugin architecture", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "Core SDK client with plugin architecture",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(25),
       },
       {
@@ -1415,7 +1510,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "sdk-task-core",
-        metadata: { title: "Core SDK client with plugin architecture", from: "IN_PROGRESS", to: "DONE" },
+        metadata: {
+          title: "Core SDK client with plugin architecture",
+          from: "IN_PROGRESS",
+          to: "DONE",
+        },
         createdAt: daysAgo(15),
       },
       {
@@ -1424,7 +1523,11 @@ async function seedActivityLogs(ctx: {
         action: "task_status_changed",
         entityType: "Task",
         entityId: "sdk-task-auth",
-        metadata: { title: "OAuth 2.0 PKCE authentication module", from: "TODO", to: "IN_PROGRESS" },
+        metadata: {
+          title: "OAuth 2.0 PKCE authentication module",
+          from: "TODO",
+          to: "IN_PROGRESS",
+        },
         createdAt: daysAgo(12),
       },
       {
