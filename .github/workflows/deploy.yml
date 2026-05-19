@@ -70,14 +70,6 @@ jobs:
     needs: migrate
     environment: production
 
-    # Skip this job if no socket-relevant files changed.
-    # Note: `needs: migrate` still ran above — migrations always apply
-    # regardless of which files changed.
-    if: |
-      contains(github.event.head_commit.modified, 'apps/socket/') ||
-      contains(github.event.head_commit.modified, 'packages/db/') ||
-      contains(github.event.head_commit.modified, 'packages/types/') ||
-      contains(github.event.head_commit.modified, 'packages/logger/')
 
     steps:
       - name: Checkout
