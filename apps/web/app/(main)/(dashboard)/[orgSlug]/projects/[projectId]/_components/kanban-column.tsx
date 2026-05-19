@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Plus } from "lucide-react";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
-import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
-import { TaskCard } from "./task-card";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 import { CreateTaskDialog } from "./create-task-dialog";
+import { TaskCard } from "./task-card";
 
 interface Member {
   id: string;

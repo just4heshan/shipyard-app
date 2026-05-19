@@ -2,9 +2,9 @@ import {
   Button,
   Heading,
   Hr,
+  render,
   Section,
   Text,
-  render,
 } from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
@@ -144,7 +144,7 @@ export function CommentMentionEmail({
   //   @alex                 →  [@alex]           (plain handle, legacy format)
   const highlightedComment = commentText.replace(
     /@\[([^|]+)\|[^\]]+\]|@(\w+)/g,
-    (_, idName?: string, simpleName?: string) => `[@${idName ?? simpleName}]`,
+    (_, idName?: string, simpleName?: string) => `[@${idName ?? simpleName}]`
   );
   const timeAgo = formatTimeAgo(new Date(createdAt));
 
@@ -211,7 +211,7 @@ CommentMentionEmail.PreviewProps = {
 export default CommentMentionEmail;
 
 export async function renderCommentMentionEmail(
-  props: CommentMentionEmailProps,
+  props: CommentMentionEmailProps
 ): Promise<string> {
   return render(<CommentMentionEmail {...props} />);
 }

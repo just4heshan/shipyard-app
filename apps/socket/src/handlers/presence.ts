@@ -1,17 +1,17 @@
 import { logger } from "@shipyard/logger";
-import type { AppSocket } from "../middleware/auth.js";
 import {
+  type AppServer,
   buildUserList,
   isMemberOfProject,
   leaveProject,
-  type AppServer,
   type PresenceMap,
 } from "../lib/presence.js";
+import type { AppSocket } from "../middleware/auth.js";
 
 export function registerPresenceHandlers(
   io: AppServer,
   socket: AppSocket,
-  presence: PresenceMap,
+  presence: PresenceMap
 ) {
   const { userId, userName, userImage } = socket.data;
 
@@ -36,7 +36,7 @@ export function registerPresenceHandlers(
         socketIds: new Set(),
       });
     }
-    projectPresence.get(userId)!.socketIds.add(socket.id);
+    projectPresence.get(userId)?.socketIds.add(socket.id);
 
     io.to(room).emit("presence:update", {
       projectId,

@@ -1,14 +1,5 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import {
-  type ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
-
-import { cn } from "@shipyard/ui/lib/utils"
 import {
   Table,
   TableBody,
@@ -16,20 +7,28 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shipyard/ui/components/table"
+} from "@shipyard/ui/components/table";
+import { cn } from "@shipyard/ui/lib/utils";
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import type * as React from "react";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
   /** Rendered above the table — search inputs, filter selects, etc. */
-  toolbar?: React.ReactNode
+  toolbar?: React.ReactNode;
   /** Shown when data is empty */
-  emptyState?: React.ReactNode
+  emptyState?: React.ReactNode;
   /** Called when a row is clicked */
-  onRowClick?: (row: TData) => void
+  onRowClick?: (row: TData) => void;
   /** Extra handlers forwarded to each row (e.g. onMouseMove for tooltips) */
-  rowProps?: (row: TData) => React.HTMLAttributes<HTMLTableRowElement>
-  className?: string
+  rowProps?: (row: TData) => React.HTMLAttributes<HTMLTableRowElement>;
+  className?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -45,7 +44,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  });
 
   return (
     <div className={cn("space-y-3", className)}>
@@ -62,7 +61,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -82,7 +81,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -102,5 +101,5 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
     </div>
-  )
+  );
 }

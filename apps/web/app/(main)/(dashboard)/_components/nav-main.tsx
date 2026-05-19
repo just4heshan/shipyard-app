@@ -1,18 +1,10 @@
 "use client";
 
-import * as React from "react";
-import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
 import {
-  Activity,
-  ChevronRight,
-  FolderKanban,
-  LayoutDashboard,
-  Settings,
-  Users,
-  CreditCard,
-  Webhook,
-} from "lucide-react";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@shipyard/ui/components/collapsible";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -24,12 +16,20 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@shipyard/ui/components/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@shipyard/ui/components/collapsible";
 import { Skeleton } from "@shipyard/ui/components/skeleton";
+import {
+  Activity,
+  ChevronRight,
+  CreditCard,
+  FolderKanban,
+  LayoutDashboard,
+  Settings,
+  Users,
+  Webhook,
+} from "lucide-react";
+import Link from "next/link";
+import { useParams, usePathname } from "next/navigation";
+import * as React from "react";
 import { useOrgStore } from "@/src/stores/org-store";
 
 const globalItems = [
@@ -166,7 +166,7 @@ export function NavMain({
                           <SidebarMenuSubButton
                             asChild
                             isActive={pathname.startsWith(
-                              `/${orgSlug}/org-settings/billing`,
+                              `/${orgSlug}/org-settings/billing`
                             )}
                           >
                             <Link href={`/${orgSlug}/org-settings/billing`}>
@@ -180,7 +180,7 @@ export function NavMain({
                             <SidebarMenuSubButton
                               asChild
                               isActive={pathname.startsWith(
-                                `/${orgSlug}/org-settings/webhooks`,
+                                `/${orgSlug}/org-settings/webhooks`
                               )}
                             >
                               <Link href={`/${orgSlug}/org-settings/webhooks`}>

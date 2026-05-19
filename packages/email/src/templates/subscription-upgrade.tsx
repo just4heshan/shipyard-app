@@ -1,4 +1,11 @@
-import { Button, Heading, Hr, Section, Text, render } from "@react-email/components";
+import {
+  Button,
+  Heading,
+  Hr,
+  render,
+  Section,
+  Text,
+} from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
 export interface SubscriptionUpgradeEmailProps {
@@ -20,8 +27,8 @@ export function SubscriptionUpgradeEmail({
       <Heading style={styles.heading}>Welcome to Pro, {ownerName}!</Heading>
       <Text style={styles.body_text}>
         Your <strong>{orgName}</strong> workspace has been upgraded to the{" "}
-        <strong>Pro plan</strong>. You now have access to unlimited projects,
-        up to 25 members per org, and priority support.
+        <strong>Pro plan</strong>. You now have access to unlimited projects, up
+        to 25 members per org, and priority support.
       </Text>
       <Text style={styles.meta}>
         Your next billing date is <strong>{periodEnd}</strong>.
@@ -50,7 +57,7 @@ SubscriptionUpgradeEmail.PreviewProps = {
 export default SubscriptionUpgradeEmail;
 
 export async function renderSubscriptionUpgradeEmail(
-  props: SubscriptionUpgradeEmailProps,
+  props: SubscriptionUpgradeEmailProps
 ): Promise<string> {
   return render(<SubscriptionUpgradeEmail {...props} />);
 }

@@ -3,8 +3,8 @@ import {
   Building2,
   ClipboardList,
   FolderArchive,
-  FolderOpen,
   FolderKanban,
+  FolderOpen,
   FolderPlus,
   FolderX,
   MessageSquarePlus,
@@ -53,9 +53,9 @@ export const ACTION_CONFIG: Record<
   // Project
   PROJECT_CREATED: { label: "Created project", icon: FolderPlus },
   PROJECT_UPDATED: { label: "Updated project", icon: FolderKanban },
-  PROJECT_ARCHIVED:   { label: "Archived project",   icon: FolderArchive },
+  PROJECT_ARCHIVED: { label: "Archived project", icon: FolderArchive },
   PROJECT_UNARCHIVED: { label: "Unarchived project", icon: FolderOpen },
-  PROJECT_DELETED:    { label: "Deleted project",    icon: FolderX },
+  PROJECT_DELETED: { label: "Deleted project", icon: FolderX },
   // Task
   TASK_CREATED: { label: "Created task", icon: ClipboardList },
   TASK_UPDATED: { label: "Updated task", icon: Pencil },

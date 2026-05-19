@@ -1,13 +1,13 @@
 "use client";
 
+import type { AppRouter } from "@shipyard/api/server/routers/_app";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
+  type CreateTRPCReact,
   createTRPCReact,
   httpBatchLink,
-  type CreateTRPCReact,
 } from "@trpc/react-query";
-import type { AppRouter } from "@shipyard/api/server/routers/_app";
 import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const trpc: CreateTRPCReact<AppRouter, unknown> =
   createTRPCReact<AppRouter>();
@@ -26,7 +26,7 @@ export function TRPCReactProvider({ children }: { children: React.ReactNode }) {
             staleTime: 30 * 1000,
           },
         },
-      }),
+      })
   );
 
   const [trpcClient] = useState(() =>
@@ -36,7 +36,7 @@ export function TRPCReactProvider({ children }: { children: React.ReactNode }) {
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
-    }),
+    })
   );
 
   return (

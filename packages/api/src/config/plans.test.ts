@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { ORG_OWNER_LIMITS, MEMBER_LIMITS, PROJECT_LIMITS } from "./plans.js";
+import { describe, expect, it } from "vitest";
+import { MEMBER_LIMITS, ORG_OWNER_LIMITS, PROJECT_LIMITS } from "./plans.js";
 
 // Sanity tests for subscription tier limits.
 //

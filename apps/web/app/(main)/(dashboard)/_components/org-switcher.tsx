@@ -1,10 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { ChevronsUpDown, Plus } from "lucide-react";
-import type { SubscriptionTier } from "@shipyard/db/enum";
 import { ORG_OWNER_LIMITS } from "@shipyard/api/config/plans";
+import type { SubscriptionTier } from "@shipyard/db/enum";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,9 +18,12 @@ import {
   useSidebar,
 } from "@shipyard/ui/components/sidebar";
 import { Skeleton } from "@shipyard/ui/components/skeleton";
+import { ChevronsUpDown, Plus } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import * as React from "react";
+import { UpgradeDialog } from "@/src/components/upgrade-dialog";
 import { useOrgStore } from "@/src/stores/org-store";
 import { CreateOrgDialog } from "./create-org-dialog";
-import { UpgradeDialog } from "@/src/components/upgrade-dialog";
 
 interface Org {
   id: string;
@@ -114,7 +114,9 @@ export function OrgSwitcher({
 
   if (!activeOrg) return null;
 
-  const atOrgLimit = ownedOrgCount >= (ORG_OWNER_LIMITS[activeOrg.subscriptionTier] ?? ORG_OWNER_LIMITS.FREE);
+  const atOrgLimit =
+    ownedOrgCount >=
+    (ORG_OWNER_LIMITS[activeOrg.subscriptionTier] ?? ORG_OWNER_LIMITS.FREE);
 
   return (
     <>

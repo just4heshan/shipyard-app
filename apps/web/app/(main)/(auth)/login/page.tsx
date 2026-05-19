@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
+import { auth } from "@/server/auth";
 import { LoginButtons } from "./login-buttons";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -9,7 +9,8 @@ const AUTH_ERRORS: Record<string, string> = {
   // OAuth
   OAuthAccountNotLinked:
     "An account with this email already exists. Sign in with the provider you used originally.",
-  OAuthCallbackError: "Something went wrong with the sign-in. Please try again.",
+  OAuthCallbackError:
+    "Something went wrong with the sign-in. Please try again.",
   AccessDenied: "Access was denied. Please try again.",
   CredentialsSignin:
     "Invalid email or password. If you recently signed up, check your inbox for the verification link.",
@@ -18,7 +19,11 @@ const AUTH_ERRORS: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; verified?: string; callbackUrl?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    verified?: string;
+    callbackUrl?: string;
+  }>;
 }) {
   // Permission check in page.tsx — never in layout.tsx
   const session = await auth();

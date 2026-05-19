@@ -1,4 +1,11 @@
-import { Button, Heading, Hr, Section, Text, render } from "@react-email/components";
+import {
+  Button,
+  Heading,
+  Hr,
+  render,
+  Section,
+  Text,
+} from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
 export interface PaymentFailedEmailProps {
@@ -15,7 +22,9 @@ export function PaymentFailedEmail({
   return (
     <EmailShell preview={`Action required: payment failed for ${orgName}`}>
       <Text style={styles.badgeWarn}>⚠️ Payment Failed</Text>
-      <Heading style={styles.heading}>Your payment didn&apos;t go through</Heading>
+      <Heading style={styles.heading}>
+        Your payment didn&apos;t go through
+      </Heading>
       <Text style={styles.body_text}>
         Hi <strong>{ownerName}</strong>, we weren&apos;t able to process the
         payment for your <strong>{orgName}</strong> Pro subscription.
@@ -47,7 +56,7 @@ PaymentFailedEmail.PreviewProps = {
 export default PaymentFailedEmail;
 
 export async function renderPaymentFailedEmail(
-  props: PaymentFailedEmailProps,
+  props: PaymentFailedEmailProps
 ): Promise<string> {
   return render(<PaymentFailedEmail {...props} />);
 }

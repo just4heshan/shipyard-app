@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
 import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure } from "../trpc";
+import jwt from "jsonwebtoken";
+import { protectedProcedure, router } from "../trpc";
 
 export const socketRouter = router({
   /** Issue a short-lived signed JWT the client passes to the socket server on connect.
@@ -14,11 +14,9 @@ export const socketRouter = router({
       });
     }
 
-    const token = jwt.sign(
-      { userId: ctx.session.user.id },
-      secret,
-      { expiresIn: "60s" },
-    );
+    const token = jwt.sign({ userId: ctx.session.user.id }, secret, {
+      expiresIn: "60s",
+    });
 
     return { token };
   }),

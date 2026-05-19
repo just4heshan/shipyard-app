@@ -1,8 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Loader2, AlertTriangle } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
+import { Button } from "@shipyard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shipyard/ui/components/dialog";
-import { Button } from "@shipyard/ui/components/button";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface CancelPlanDialogProps {
   open: boolean;

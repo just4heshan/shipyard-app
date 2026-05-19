@@ -12,6 +12,6 @@ export const useOrgStore = create<OrgStore>()(
       activeOrgSlug: null,
       setActiveOrgSlug: (slug) => set({ activeOrgSlug: slug }),
     }),
-    { name: "shipyard-active-org" },
-  ),
+    { name: "shipyard-active-org" }
+  )
 );

@@ -1,12 +1,12 @@
-import jwt from "jsonwebtoken";
 import { db } from "@shipyard/db";
 import { logger } from "@shipyard/logger";
-import type { Socket } from "socket.io";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
   SocketData,
 } from "@shipyard/types/socket";
+import jwt from "jsonwebtoken";
+import type { Socket } from "socket.io";
 
 export type AppSocket = Socket<
   ClientToServerEvents,
@@ -17,7 +17,7 @@ export type AppSocket = Socket<
 
 export async function authMiddleware(
   socket: AppSocket,
-  next: (err?: Error) => void,
+  next: (err?: Error) => void
 ) {
   const token = socket.handshake.auth.token as string | undefined;
 

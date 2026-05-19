@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ArchiveRestore } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
 import { Button } from "@shipyard/ui/components/button";
+import { ArchiveRestore } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface ArchivedProjectBannerProps {
   projectId: string;
@@ -28,9 +28,7 @@ export function ArchivedProjectBanner({
     <div className="flex items-center justify-between gap-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300 shrink-0">
       <div className="flex items-center gap-2">
         <ArchiveRestore className="size-4 shrink-0" />
-        <span>
-          This project is archived. Tasks are read-only.
-        </span>
+        <span>This project is archived. Tasks are read-only.</span>
       </div>
       {canManage && (
         <Button

@@ -51,5 +51,13 @@ export function useSocketTasks(projectId: string) {
       socket.off("task:moved");
       socket.off("task:reordered");
     };
-  }, [socket, projectId]);
+  }, [
+    socket,
+    projectId,
+    moveTask,
+    updateTask,
+    reorderTasks,
+    removeTask,
+    addTask,
+  ]);
 }

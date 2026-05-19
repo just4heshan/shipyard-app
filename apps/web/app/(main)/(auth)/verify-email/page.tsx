@@ -2,7 +2,11 @@ import { db } from "@shipyard/db";
 import { redirect } from "next/navigation";
 
 interface Props {
-  searchParams: Promise<{ token?: string; email?: string; callbackUrl?: string }>;
+  searchParams: Promise<{
+    token?: string;
+    email?: string;
+    callbackUrl?: string;
+  }>;
 }
 
 export default async function VerifyEmailPage({ searchParams }: Props) {
@@ -10,7 +14,12 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
 
   // Missing params — link is malformed
   if (!token || !email) {
-    return <VerifyMessage title="Invalid link" body="This verification link is missing required parameters." />;
+    return (
+      <VerifyMessage
+        title="Invalid link"
+        body="This verification link is missing required parameters."
+      />
+    );
   }
 
   const record = await db.verificationToken.findUnique({
@@ -55,7 +64,9 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
     }),
   ]);
 
-  const cbParam = callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : "";
+  const cbParam = callbackUrl
+    ? `&callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "";
   redirect(`/login?verified=true${cbParam}`);
 }
 
@@ -77,10 +88,7 @@ function VerifyMessage({
       <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
       <p className="text-sm text-muted-foreground">{body}</p>
       {linkHref && linkLabel && (
-        <a
-          href={linkHref}
-          className="text-sm underline underline-offset-4"
-        >
+        <a href={linkHref} className="text-sm underline underline-offset-4">
           {linkLabel}
         </a>
       )}

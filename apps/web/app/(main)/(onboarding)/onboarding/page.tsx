@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { auth } from "@/server/auth";
-import { redirect } from "next/navigation";
 import { db } from "@shipyard/db";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@/server/auth";
 import { SetupOrgForm } from "./setup-org-form";
 
 export const metadata: Metadata = { title: "Set up your organization" };

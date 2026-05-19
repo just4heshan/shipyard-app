@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun } from "lucide-react";
 import { cn } from "@shipyard/ui/lib/utils";
+import { Monitor, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 const themes = [
   { value: "light", label: "Light", icon: Sun },
@@ -31,7 +31,7 @@ export function ThemeSelector() {
             "flex flex-col items-center gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
             mounted && theme === value
               ? "border-primary bg-accent text-accent-foreground"
-              : "border-border text-muted-foreground",
+              : "border-border text-muted-foreground"
           )}
         >
           <Icon className="size-5" />

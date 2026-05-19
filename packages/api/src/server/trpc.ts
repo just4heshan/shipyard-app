@@ -1,7 +1,7 @@
-import { initTRPC, TRPCError } from "@trpc/server";
 import { logger } from "@shipyard/logger";
-import type { Context } from "./context";
+import { initTRPC, TRPCError } from "@trpc/server";
 import type { Session } from "next-auth";
+import type { Context } from "./context";
 
 // Narrows session.user to be definitely present with a required id.
 // The guard in protectedProcedure guarantees this at runtime.

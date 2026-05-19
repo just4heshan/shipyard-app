@@ -1,17 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
-import { useKanbanStore } from "@/src/stores/kanban-store";
 import type { Task as KanbanTask, TaskPriority } from "@shipyard/types/task";
-import { useSocket } from "@/src/providers/socket-provider";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@shipyard/ui/components/avatar";
 import { Button } from "@shipyard/ui/components/button";
 import { Input } from "@shipyard/ui/components/input";
-import { Textarea } from "@shipyard/ui/components/textarea";
 import { Label } from "@shipyard/ui/components/label";
-import { Separator } from "@shipyard/ui/components/separator";
 import {
   Select,
   SelectContent,
@@ -19,11 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shipyard/ui/components/select";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@shipyard/ui/components/avatar";
+import { Separator } from "@shipyard/ui/components/separator";
 import {
   Sheet,
   SheetContent,
@@ -31,9 +24,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shipyard/ui/components/sheet";
+import { Textarea } from "@shipyard/ui/components/textarea";
 import { useIsMobile } from "@shipyard/ui/hooks/use-mobile";
-import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { userInitials } from "@/lib/userInitials";
+import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import { useSocket } from "@/src/providers/socket-provider";
+import { trpc } from "@/src/providers/trpc-react-provider";
+import { useKanbanStore } from "@/src/stores/kanban-store";
 import { TaskComments } from "./task-comments";
 
 interface Member {
@@ -80,10 +80,10 @@ export function TaskDetailSheet({
   const [description, setDescription] = useState(task.description ?? "");
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [assigneeId, setAssigneeId] = useState<string>(
-    task.assignee?.id ?? "none",
+    task.assignee?.id ?? "none"
   );
   const [dueDate, setDueDate] = useState(
-    task.dueDate ? task.dueDate.split("T")[0] : "",
+    task.dueDate ? task.dueDate.split("T")[0] : ""
   );
   const [isDirty, setIsDirty] = useState(false);
   const [confirmDeleteTaskOpen, setConfirmDeleteTaskOpen] = useState(false);
@@ -98,7 +98,14 @@ export function TaskDetailSheet({
     setAssigneeId(task.assignee?.id ?? "none");
     setDueDate(task.dueDate ? task.dueDate.split("T")[0] : "");
     setIsDirty(false);
-  }, [task.id]);
+  }, [
+    task.priority,
+    task.description,
+    task.title,
+    task?.dueDate?.split,
+    task.dueDate,
+    task.assignee?.id,
+  ]);
 
   const remove = trpc.task.delete.useMutation({
     onSuccess: () => {

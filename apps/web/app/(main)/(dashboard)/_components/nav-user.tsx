@@ -1,19 +1,5 @@
 "use client";
 
-import * as React from "react";
-import {
-  BadgeCheck,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Monitor,
-  Moon,
-  Sparkles,
-  Sun,
-} from "lucide-react";
-import { useTheme } from "next-themes";
-import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import type { SubscriptionTier } from "@shipyard/db/enum";
 import {
   Avatar,
@@ -36,6 +22,20 @@ import {
   useSidebar,
 } from "@shipyard/ui/components/sidebar";
 import { Skeleton } from "@shipyard/ui/components/skeleton";
+import {
+  BadgeCheck,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Monitor,
+  Moon,
+  Sparkles,
+  Sun,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import * as React from "react";
 import { userInitials } from "@/lib/userInitials";
 import { useOrgStore } from "@/src/stores/org-store";
 

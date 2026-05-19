@@ -4,9 +4,9 @@ import { processStripeEvent } from "./process";
 
 // Exponential backoff delays (milliseconds) per retry attempt
 const BACKOFF_MS = [
-  60_000,       // attempt 1: 1 minute
-  300_000,      // attempt 2: 5 minutes
-  1_800_000,    // attempt 3: 30 minutes
+  60_000, // attempt 1: 1 minute
+  300_000, // attempt 2: 5 minutes
+  1_800_000, // attempt 3: 30 minutes
 ];
 
 export interface RetryResult {
@@ -20,7 +20,9 @@ export interface RetryResult {
  * nextRetryAt has passed. Called by the `/api/webhooks/stripe/retry` cron
  * route on every scheduled tick.
  */
-export async function processRetryQueue(db: PrismaClient): Promise<RetryResult> {
+export async function processRetryQueue(
+  db: PrismaClient
+): Promise<RetryResult> {
   const result: RetryResult = { processed: 0, failed: 0, deadLettered: 0 };
 
   const due = await db.webhookEvent.findMany({
@@ -30,10 +32,7 @@ export async function processRetryQueue(db: PrismaClient): Promise<RetryResult> 
       processed: false,
       nextRetryAt: { lte: new Date() },
     },
-    orderBy: [
-      { priority: "desc" },
-      { nextRetryAt: "asc" },
-    ],
+    orderBy: [{ priority: "desc" }, { nextRetryAt: "asc" }],
     select: {
       id: true,
       eventType: true,
@@ -85,7 +84,8 @@ export async function processRetryQueue(db: PrismaClient): Promise<RetryResult> 
           error: message,
         });
       } else {
-        const delay = BACKOFF_MS[nextAttempt - 1] ?? BACKOFF_MS[BACKOFF_MS.length - 1]!;
+        const delay =
+          BACKOFF_MS[nextAttempt - 1] ?? BACKOFF_MS[BACKOFF_MS.length - 1]!;
         await db.webhookEvent.update({
           where: { id: event.id },
           data: {

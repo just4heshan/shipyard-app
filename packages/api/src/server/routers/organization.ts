@@ -1,11 +1,11 @@
-import { z } from "zod";
-import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure } from "../trpc";
 import { logger } from "@shipyard/logger";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import { ORG_OWNER_LIMITS } from "../../config/plans";
+import { ActivityAction, EntityType, logActivity } from "../../lib/activityLog";
 import { requireMembership } from "../../lib/membership";
-import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
 import { toSlug } from "../../lib/slug";
+import { protectedProcedure, router } from "../trpc";
 
 export const organizationRouter = router({
   getMyOrgs: protectedProcedure.query(async ({ ctx }) => {
@@ -33,7 +33,7 @@ export const organizationRouter = router({
     .input(
       z.object({
         name: z.string().min(2, "Name must be at least 2 characters").max(50),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       // Enforce per-tier ownership limit.
@@ -45,13 +45,17 @@ export const organizationRouter = router({
       });
 
       const ownedCount = ownedOrgs.length;
-      const tierOrder: Record<string, number> = { FREE: 0, PRO: 1, ENTERPRISE: 2 };
+      const tierOrder: Record<string, number> = {
+        FREE: 0,
+        PRO: 1,
+        ENTERPRISE: 2,
+      };
       const highestTier = ownedOrgs.reduce<"FREE" | "PRO" | "ENTERPRISE">(
         (best, m) => {
           const t = m.organization.subscriptionTier;
           return (tierOrder[t] ?? 0) > (tierOrder[best] ?? 0) ? t : best;
         },
-        "FREE",
+        "FREE"
       );
       const limit = ORG_OWNER_LIMITS[highestTier] ?? ORG_OWNER_LIMITS.FREE;
 
@@ -159,7 +163,7 @@ export const organizationRouter = router({
       const membership = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
 
       if (membership.role !== "OWNER") {

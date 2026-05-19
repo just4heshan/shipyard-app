@@ -1,12 +1,12 @@
-import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@shipyard/db";
 import type { MemberRole } from "@shipyard/db/enum";
+import { TRPCError } from "@trpc/server";
 
 /** Assert caller is a member of the org and return their membership. */
 export async function requireMembership(
   db: PrismaClient,
   userId: string,
-  orgId: string,
+  orgId: string
 ) {
   const membership = await db.member.findUnique({
     where: { userId_organizationId: { userId, organizationId: orgId } },

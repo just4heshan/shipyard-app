@@ -1,11 +1,11 @@
 import { db } from "@shipyard/db";
-import type { Server } from "socket.io";
 import type {
   ClientToServerEvents,
+  PresenceUser,
   ServerToClientEvents,
   SocketData,
-  PresenceUser,
 } from "@shipyard/types/socket";
+import type { Server } from "socket.io";
 import type { AppSocket } from "../middleware/auth.js";
 
 export type AppServer = Server<
@@ -31,7 +31,7 @@ export type PresenceMap = Map<string, Map<string, PresenceEntry>>;
 
 export function buildUserList(
   presence: PresenceMap,
-  projectId: string,
+  projectId: string
 ): PresenceUser[] {
   const projectViewers = presence.get(projectId);
   if (!projectViewers) return [];
@@ -44,7 +44,7 @@ export function buildUserList(
 
 export async function isMemberOfProject(
   userId: string,
-  projectId: string,
+  projectId: string
 ): Promise<boolean> {
   const member = await db.member.findFirst({
     where: {
@@ -60,7 +60,7 @@ export function leaveProject(
   io: AppServer,
   socket: AppSocket,
   presence: PresenceMap,
-  projectId: string,
+  projectId: string
 ) {
   const { userId } = socket.data;
   const room = `project:${projectId}`;

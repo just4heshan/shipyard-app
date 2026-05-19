@@ -1,6 +1,7 @@
 "use client";
 
 import type { PresenceUser } from "@shipyard/types/socket";
+import Image from "next/image";
 import { userInitials } from "@/lib/userInitials";
 
 interface PresenceAvatarsProps {
@@ -26,7 +27,7 @@ export function PresenceAvatars({ users }: PresenceAvatarsProps) {
             className="size-7 rounded-full border-2 border-background bg-muted flex items-center justify-center overflow-hidden"
           >
             {u.image ? (
-              <img
+              <Image
                 src={u.image}
                 alt={u.name ?? ""}
                 referrerPolicy="no-referrer"

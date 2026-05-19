@@ -1,13 +1,13 @@
 import type { PrismaClient } from "@shipyard/db";
-import { logger } from "@shipyard/logger";
 import {
-  sendEmail,
-  renderSubscriptionUpgradeEmail,
-  renderSubscriptionCancelScheduledEmail,
-  renderSubscriptionReactivatedEmail,
-  renderSubscriptionDowngradedEmail,
   renderPaymentFailedEmail,
+  renderSubscriptionCancelScheduledEmail,
+  renderSubscriptionDowngradedEmail,
+  renderSubscriptionReactivatedEmail,
+  renderSubscriptionUpgradeEmail,
+  sendEmail,
 } from "@shipyard/email";
+import { logger } from "@shipyard/logger";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ interface InvoiceObject {
 export async function processStripeEvent(
   eventType: string,
   eventData: unknown,
-  db: PrismaClient,
+  db: PrismaClient
 ): Promise<void> {
   const raw = eventData as {
     object?: unknown;
@@ -66,7 +66,7 @@ export async function processStripeEvent(
         data as SubscriptionObject,
         db,
         eventType,
-        prev,
+        prev
       );
       break;
 
@@ -95,12 +95,12 @@ async function handleSubscriptionUpsert(
   sub: SubscriptionObject,
   db: PrismaClient,
   eventType: string,
-  prev: Record<string, unknown>,
+  prev: Record<string, unknown>
 ) {
   const orgId = sub.metadata?.orgId;
   if (!orgId) {
     throw new Error(
-      `Missing orgId in subscription metadata for subscription ${sub.id}`,
+      `Missing orgId in subscription metadata for subscription ${sub.id}`
     );
   }
 
@@ -166,13 +166,13 @@ async function handleSubscriptionUpsert(
     logger.warn("Failed to send subscription email", {
       orgId,
       error: String(err),
-    }),
+    })
   );
 }
 
 async function handleSubscriptionDeleted(
   sub: SubscriptionObject,
-  db: PrismaClient,
+  db: PrismaClient
 ) {
   const orgId = sub.metadata?.orgId;
   if (!orgId) return;
@@ -193,7 +193,7 @@ async function handleSubscriptionDeleted(
     logger.warn("Failed to send downgrade email", {
       orgId,
       error: String(err),
-    }),
+    })
   );
 }
 
@@ -244,7 +244,7 @@ async function handlePaymentFailed(inv: InvoiceObject, db: PrismaClient) {
     logger.warn("Failed to send payment failed email", {
       orgId: resolvedOrgId,
       error: String(err),
-    }),
+    })
   );
 }
 

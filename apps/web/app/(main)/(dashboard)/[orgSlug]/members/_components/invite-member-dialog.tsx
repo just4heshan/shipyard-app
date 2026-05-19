@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { UserPlus } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
+import type { MemberRole } from "@shipyard/db/enum";
 import { Button } from "@shipyard/ui/components/button";
-import { Input } from "@shipyard/ui/components/input";
-import { Label } from "@shipyard/ui/components/label";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@shipyard/ui/components/dialog";
+import { Input } from "@shipyard/ui/components/input";
+import { Label } from "@shipyard/ui/components/label";
 import {
   Select,
   SelectContent,
@@ -23,8 +20,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shipyard/ui/components/select";
-import type { MemberRole } from "@shipyard/db/enum";
+import { UserPlus } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { UpgradeDialog } from "@/src/components/upgrade-dialog";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 const ALL_ROLES: { value: MemberRole; label: string }[] = [
   { value: "OWNER", label: "Owner" },
@@ -115,7 +115,8 @@ export function InviteMemberDialog({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") invite.mutate({ orgId, email: email.trim(), role });
+                if (e.key === "Enter")
+                  invite.mutate({ orgId, email: email.trim(), role });
               }}
               autoFocus
             />

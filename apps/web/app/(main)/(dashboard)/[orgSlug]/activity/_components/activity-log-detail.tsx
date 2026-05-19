@@ -1,7 +1,5 @@
 "use client";
 
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import {
   Avatar,
   AvatarFallback,
@@ -15,8 +13,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@shipyard/ui/components/sheet";
-import { userInitials } from "@/lib/userInitials";
 import { useIsMobile } from "@shipyard/ui/hooks/use-mobile";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { userInitials } from "@/lib/userInitials";
 import { ACTION_CONFIG, type ActivityLogItem } from "./types";
 
 dayjs.extend(relativeTime);
@@ -30,11 +30,20 @@ export function ActivityLogDetail({ log, onClose }: ActivityLogDetailProps) {
   const isMobile = useIsMobile();
 
   return (
-    <Sheet open={log !== null} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Sheet
+      open={log !== null}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       {log && (
         <SheetContent
           side={isMobile ? "bottom" : "right"}
-          className={isMobile ? "overflow-y-auto max-h-[85vh]" : "w-full sm:max-w-md overflow-y-auto"}
+          className={
+            isMobile
+              ? "overflow-y-auto max-h-[85vh]"
+              : "w-full sm:max-w-md overflow-y-auto"
+          }
         >
           <SheetHeader className="pb-2">
             <SheetTitle className="flex items-center gap-2">

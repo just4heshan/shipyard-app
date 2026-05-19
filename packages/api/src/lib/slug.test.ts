@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { toSlug } from "./slug.js";
 
 // toSlug converts a display name into a URL-safe slug.

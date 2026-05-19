@@ -1,10 +1,10 @@
 export {
-  Prisma,
-  SubscriptionTier,
-  MemberRole,
-  ProjectStatus,
-  TaskStatus,
-  Priority,
-  SubscriptionStatus,
   EmailStatus,
+  MemberRole,
+  Priority,
+  Prisma,
+  ProjectStatus,
+  SubscriptionStatus,
+  SubscriptionTier,
+  TaskStatus,
 } from "@prisma/client";

@@ -1,4 +1,11 @@
-import { Button, Heading, Hr, Section, Text, render } from "@react-email/components";
+import {
+  Button,
+  Heading,
+  Hr,
+  render,
+  Section,
+  Text,
+} from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
 export interface SubscriptionCancelScheduledEmailProps {
@@ -53,7 +60,7 @@ SubscriptionCancelScheduledEmail.PreviewProps = {
 export default SubscriptionCancelScheduledEmail;
 
 export async function renderSubscriptionCancelScheduledEmail(
-  props: SubscriptionCancelScheduledEmailProps,
+  props: SubscriptionCancelScheduledEmailProps
 ): Promise<string> {
   return render(<SubscriptionCancelScheduledEmail {...props} />);
 }

@@ -1,12 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
-import Link from "next/link";
-import { register } from "./actions";
-import type { RegisterState } from "./actions";
 import { Button } from "@shipyard/ui/components/button";
 import { Input } from "@shipyard/ui/components/input";
 import { Label } from "@shipyard/ui/components/label";
+import Link from "next/link";
+import { useActionState } from "react";
+import type { RegisterState } from "./actions";
+import { register } from "./actions";
 
 const initialState: RegisterState = { status: "idle" };
 
@@ -29,7 +29,9 @@ export function SignupForm({ callbackUrl }: { callbackUrl?: string }) {
           </Link>
           .
         </p>
-        <p className="text-xs text-muted-foreground">The link expires in 24 hours.</p>
+        <p className="text-xs text-muted-foreground">
+          The link expires in 24 hours.
+        </p>
       </div>
     );
   }

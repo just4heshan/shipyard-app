@@ -1,10 +1,5 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { trpc } from "@/src/providers/trpc-react-provider";
 import {
   Avatar,
   AvatarFallback,
@@ -12,9 +7,14 @@ import {
 } from "@shipyard/ui/components/avatar";
 import { Button } from "@shipyard/ui/components/button";
 import { Textarea } from "@shipyard/ui/components/textarea";
-import { userInitials } from "@/lib/userInitials";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { userInitials } from "@/lib/userInitials";
 import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 dayjs.extend(relativeTime);
 
@@ -47,7 +47,7 @@ function renderMentions(text: string, members: Member[]) {
     const tokenMatch = part.match(/^@\[([^|]+)\|([^\]]+)\]$/);
     if (tokenMatch) {
       const storedName = tokenMatch[1]; // snapshot — fallback only
-      const memberId = tokenMatch[2];   // source of truth
+      const memberId = tokenMatch[2]; // source of truth
       // Prefer live name so renames are always reflected
       const liveMember = members.find((m) => m.id === memberId);
       const displayName = liveMember?.user.name ?? storedName;
@@ -205,7 +205,7 @@ export function TaskComments({
     // Longest names replaced first to prevent partial-name collisions
     let encoded = trimmed;
     const sorted = [...mentionMapRef.current.entries()].sort(
-      (a, b) => b[0].length - a[0].length,
+      (a, b) => b[0].length - a[0].length
     );
     for (const [name, id] of sorted) {
       encoded = encoded.split(`@${name}`).join(`@[${name}|${id}]`);

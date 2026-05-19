@@ -1,5 +1,5 @@
-import Stripe from "stripe";
 import { TRPCError } from "@trpc/server";
+import Stripe from "stripe";
 
 export function getStripe(): InstanceType<typeof Stripe> {
   const key = process.env.STRIPE_SECRET_KEY;

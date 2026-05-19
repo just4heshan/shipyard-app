@@ -1,13 +1,13 @@
+import { Separator } from "@shipyard/ui/components/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@shipyard/ui/components/sidebar";
-import { Separator } from "@shipyard/ui/components/separator";
 import { TooltipProvider } from "@shipyard/ui/components/tooltip";
-import { AppSidebar } from "./_components/app-sidebar";
-import { BreadcrumbProvider } from "@/src/providers/breadcrumb-provider";
 import { AppBreadcrumb } from "@/src/components/app-breadcrumb";
+import { BreadcrumbProvider } from "@/src/providers/breadcrumb-provider";
+import { AppSidebar } from "./_components/app-sidebar";
 
 // Auth is read here for display only — redirects live in page.tsx per convention
 export default function DashboardLayout({

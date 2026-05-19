@@ -1,9 +1,9 @@
-import { authConfig } from "./auth.config";
-import NextAuth, { type NextAuthResult } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@shipyard/db";
 import bcrypt from "bcryptjs";
+import NextAuth, { type NextAuthResult } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "./auth.config";
 
 const result: NextAuthResult = NextAuth({
   adapter: PrismaAdapter(db),
@@ -39,7 +39,7 @@ const result: NextAuthResult = NextAuth({
         });
 
         // No account or no password row (OAuth-only user)
-        if (!user || !user.password) return null;
+        if (!user?.password) return null;
 
         const isValid = await bcrypt.compare(password, user.password.hash);
         if (!isValid) return null;
@@ -48,7 +48,12 @@ const result: NextAuthResult = NextAuth({
         // unverified status for accounts whose password is wrong anyway.
         if (!user.emailVerified) return null;
 
-        return { id: user.id, email: user.email, name: user.name, image: user.image };
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+        };
       },
     }),
   ],

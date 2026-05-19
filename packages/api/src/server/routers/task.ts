@@ -1,14 +1,18 @@
-import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@shipyard/db";
-import { sendEmail, renderTaskAssignedEmail } from "@shipyard/email";
-import { router, protectedProcedure } from "../trpc";
-import { requireMembership, requireManagerRole, requireContributorRole } from "../../lib/membership";
-import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
+import { renderTaskAssignedEmail, sendEmail } from "@shipyard/email";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { ActivityAction, EntityType, logActivity } from "../../lib/activityLog";
+import {
+  requireContributorRole,
+  requireManagerRole,
+  requireMembership,
+} from "../../lib/membership";
 import {
   assertProjectBelongsToOrg,
   assertTaskBelongsToOrg,
 } from "../../lib/projectGuards";
+import { protectedProcedure, router } from "../trpc";
 
 const taskStatusSchema = z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
 
@@ -57,16 +61,20 @@ export const taskRouter = router({
         priority: prioritySchema.default("MEDIUM"),
         assigneeId: z.string().optional(),
         dueDate: z.string().datetime().optional(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireContributorRole(caller.role);
-      const project = await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
+      const project = await assertProjectBelongsToOrg(
+        ctx.db,
+        input.projectId,
+        input.orgId
+      );
 
       if (project.status === "ARCHIVED") {
         throw new TRPCError({
@@ -115,7 +123,10 @@ export const taskRouter = router({
           callerMemberId: caller.id,
           task,
         }).catch((err: unknown) =>
-          console.error("[task.create] failed to send task-assigned email:", err),
+          console.error(
+            "[task.create] failed to send task-assigned email:",
+            err
+          )
         );
       }
 
@@ -132,19 +143,19 @@ export const taskRouter = router({
         priority: prioritySchema.optional(),
         assigneeId: z.string().nullable().optional(),
         dueDate: z.string().datetime().nullable().optional(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireContributorRole(caller.role);
       const existing = await assertTaskBelongsToOrg(
         ctx.db,
         input.taskId,
-        input.orgId,
+        input.orgId
       );
 
       const updated = await ctx.db.task.update({
@@ -194,7 +205,10 @@ export const taskRouter = router({
           callerMemberId: caller.id,
           task: updated,
         }).catch((err: unknown) =>
-          console.error("[task.update] failed to send task-assigned email:", err),
+          console.error(
+            "[task.update] failed to send task-assigned email:",
+            err
+          )
         );
       }
 
@@ -207,18 +221,18 @@ export const taskRouter = router({
         taskId: z.string(),
         orgId: z.string(),
         status: taskStatusSchema,
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       const existing = await assertTaskBelongsToOrg(
         ctx.db,
         input.taskId,
-        input.orgId,
+        input.orgId
       );
 
       // Place at end of the target column
@@ -261,9 +275,9 @@ export const taskRouter = router({
       z.object({
         orgId: z.string(),
         tasks: z.array(
-          z.object({ id: z.string(), position: z.number().int().min(0) }),
+          z.object({ id: z.string(), position: z.number().int().min(0) })
         ),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       await requireMembership(ctx.db, ctx.session.user.id, input.orgId);
@@ -273,8 +287,8 @@ export const taskRouter = router({
           ctx.db.task.update({
             where: { id: t.id },
             data: { position: t.position },
-          }),
-        ),
+          })
+        )
       );
 
       return { success: true };
@@ -286,13 +300,13 @@ export const taskRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
       const existing = await assertTaskBelongsToOrg(
         ctx.db,
         input.taskId,
-        input.orgId,
+        input.orgId
       );
 
       void logActivity({
@@ -326,7 +340,7 @@ async function sendTaskAssignedEmail(
       priority: string;
       dueDate: Date | null;
     };
-  },
+  }
 ) {
   const [assignee, assigner, project] = await Promise.all([
     db.member.findUnique({
@@ -339,7 +353,10 @@ async function sendTaskAssignedEmail(
     }),
     db.project.findUnique({
       where: { id: opts.projectId },
-      select: { name: true, organization: { select: { name: true, slug: true } } },
+      select: {
+        name: true,
+        organization: { select: { name: true, slug: true } },
+      },
     }),
   ]);
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSocket } from "@/src/providers/socket-provider";
 import type { PresenceUser } from "@shipyard/types/socket";
+import { useEffect, useState } from "react";
+import { useSocket } from "@/src/providers/socket-provider";
 
 export function usePresence(projectId: string) {
   const { socket } = useSocket();

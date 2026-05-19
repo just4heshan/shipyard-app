@@ -2,9 +2,9 @@ import {
   Button,
   Heading,
   Hr,
+  render,
   Section,
   Text,
-  render,
 } from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
@@ -120,14 +120,11 @@ export function InviteEmail({
       preview={`${inviterName} invited you to join ${orgName} on Shipyard`}
     >
       <Section style={local.orgAvatarWrap}>
-        <Text style={local.orgAvatar}>
-          {orgName.slice(0, 2).toUpperCase()}
-        </Text>
+        <Text style={local.orgAvatar}>{orgName.slice(0, 2).toUpperCase()}</Text>
       </Section>
 
       <Heading style={styles.heading}>
-        You&apos;re invited to join{" "}
-        <span style={local.orgName}>{orgName}</span>
+        You&apos;re invited to join <span style={local.orgName}>{orgName}</span>
       </Heading>
 
       <Text style={styles.body_text}>
@@ -145,8 +142,8 @@ export function InviteEmail({
 
       <Text style={local.expiry}>
         This invitation expires in {expiryDays}{" "}
-        {expiryDays === 1 ? "day" : "days"}. If you weren&apos;t expecting
-        this, you can safely ignore this email.
+        {expiryDays === 1 ? "day" : "days"}. If you weren&apos;t expecting this,
+        you can safely ignore this email.
       </Text>
 
       <Hr style={styles.divider} />
@@ -184,7 +181,7 @@ InviteEmail.PreviewProps = {
 export default InviteEmail;
 
 export async function renderInviteEmail(
-  props: InviteEmailProps,
+  props: InviteEmailProps
 ): Promise<string> {
   return render(<InviteEmail {...props} />);
 }

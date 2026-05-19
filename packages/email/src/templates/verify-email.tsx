@@ -1,4 +1,11 @@
-import { Button, Heading, Hr, Section, Text, render } from "@react-email/components";
+import {
+  Button,
+  Heading,
+  Hr,
+  render,
+  Section,
+  Text,
+} from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
 export interface VerifyEmailProps {
@@ -24,12 +31,16 @@ export function VerifyEmail({ name, verifyUrl }: VerifyEmailProps) {
       <Text style={styles.note}>
         Or copy this link into your browser:
         <br />
-        <a href={verifyUrl} style={{ color: "#09090b", wordBreak: "break-all" }}>
+        <a
+          href={verifyUrl}
+          style={{ color: "#09090b", wordBreak: "break-all" }}
+        >
           {verifyUrl}
         </a>
       </Text>
       <Text style={{ ...styles.note, marginTop: "12px" }}>
-        If you didn&apos;t create a Shipyard account you can safely ignore this email.
+        If you didn&apos;t create a Shipyard account you can safely ignore this
+        email.
       </Text>
     </EmailShell>
   );
@@ -37,11 +48,14 @@ export function VerifyEmail({ name, verifyUrl }: VerifyEmailProps) {
 
 VerifyEmail.PreviewProps = {
   name: "Alex",
-  verifyUrl: "https://shipyard.dev/verify-email?token=abc123&email=alex%40example.com",
+  verifyUrl:
+    "https://shipyard.dev/verify-email?token=abc123&email=alex%40example.com",
 } satisfies VerifyEmailProps;
 
 export default VerifyEmail;
 
-export async function renderVerifyEmail(props: VerifyEmailProps): Promise<string> {
+export async function renderVerifyEmail(
+  props: VerifyEmailProps
+): Promise<string> {
   return render(<VerifyEmail {...props} />);
 }

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Clock, X } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
-import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import type { MemberRole } from "@shipyard/db/enum";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
-import type { MemberRole } from "@shipyard/db/enum";
+import { Clock, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface Invitation {
   id: string;
@@ -48,56 +48,59 @@ export function PendingInvitations({
 
   return (
     <>
-    <section className="space-y-3">
-      <h2 className="text-sm font-medium text-muted-foreground">
-        Pending invitations ({invitations.length})
-      </h2>
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium text-muted-foreground">
+          Pending invitations ({invitations.length})
+        </h2>
 
-      <div className="divide-y divide-border rounded-lg border">
-        {invitations.map((inv) => (
-          <div key={inv.id} className="flex items-center gap-3 px-4 py-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-              <Clock className="size-4" />
+        <div className="divide-y divide-border rounded-lg border">
+          {invitations.map((inv) => (
+            <div key={inv.id} className="flex items-center gap-3 px-4 py-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <Clock className="size-4" />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className="truncate text-sm font-medium">{inv.email}</p>
+                <p className="text-xs text-muted-foreground">
+                  Invited by {inv.invitedBy.name ?? "unknown"} · expires in{" "}
+                  {daysUntil(inv.expiresAt)}d
+                </p>
+              </div>
+
+              <Badge variant="outline">{inv.role}</Badge>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="size-8 p-0 text-muted-foreground hover:text-destructive"
+                disabled={cancel.isPending}
+                onClick={() => setConfirmInvId(inv.id)}
+                title="Cancel invitation"
+              >
+                <X className="size-4" />
+                <span className="sr-only">Cancel</span>
+              </Button>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-medium">{inv.email}</p>
-              <p className="text-xs text-muted-foreground">
-                Invited by {inv.invitedBy.name ?? "unknown"} · expires in{" "}
-                {daysUntil(inv.expiresAt)}d
-              </p>
-            </div>
-
-            <Badge variant="outline">{inv.role}</Badge>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="size-8 p-0 text-muted-foreground hover:text-destructive"
-              disabled={cancel.isPending}
-              onClick={() => setConfirmInvId(inv.id)}
-              title="Cancel invitation"
-            >
-              <X className="size-4" />
-              <span className="sr-only">Cancel</span>
-            </Button>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <ConfirmDialog
-      open={confirmInvId !== null}
-      onOpenChange={(open) => { if (!open) setConfirmInvId(null); }}
-      title="Cancel invitation"
-      description={`The invitation to ${confirmInv?.email ?? "this address"} will be cancelled.`}
-      confirmLabel="Cancel invitation"
-      pendingLabel="Cancelling…"
-      isPending={cancel.isPending}
-      onConfirm={() => {
-        if (confirmInvId) cancel.mutate({ orgId, invitationId: confirmInvId });
-      }}
-    />
+      <ConfirmDialog
+        open={confirmInvId !== null}
+        onOpenChange={(open) => {
+          if (!open) setConfirmInvId(null);
+        }}
+        title="Cancel invitation"
+        description={`The invitation to ${confirmInv?.email ?? "this address"} will be cancelled.`}
+        confirmLabel="Cancel invitation"
+        pendingLabel="Cancelling…"
+        isPending={cancel.isPending}
+        onConfirm={() => {
+          if (confirmInvId)
+            cancel.mutate({ orgId, invitationId: confirmInvId });
+        }}
+      />
     </>
   );
 }

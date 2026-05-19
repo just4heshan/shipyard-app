@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Search } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
 import { DataTable } from "@shipyard/ui/components/data-table";
 import { Input } from "@shipyard/ui/components/input";
 import {
@@ -12,10 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shipyard/ui/components/select";
+import { Search } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader } from "@/src/components/loader";
-import { activityLogColumns } from "./columns";
-import { type ActivityLogItem } from "./types";
+import { trpc } from "@/src/providers/trpc-react-provider";
 import { ActivityLogDetail } from "./activity-log-detail";
+import { activityLogColumns } from "./columns";
+import type { ActivityLogItem } from "./types";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -53,7 +53,7 @@ export function ActivityLogTable({
   // activeCursor: the cursor to use for the next fetch (undefined = first page)
   // shouldFetch: gate that prevents the query from running automatically
   const [activeCursor, setActiveCursor] = useState<string | undefined>(
-    undefined,
+    undefined
   );
   const [shouldFetch, setShouldFetch] = useState(false);
 
@@ -85,7 +85,7 @@ export function ActivityLogTable({
     setNextCursor(null);
     setActiveCursor(undefined);
     setShouldFetch(true);
-  }, [debouncedSearch, entityType]);
+  }, []);
 
   // ── tRPC query ──────────────────────────────────────────────────────────────
   const { data, isFetching, isError } = trpc.activityLog.list.useQuery(
@@ -96,7 +96,7 @@ export function ActivityLogTable({
       search: debouncedSearch || undefined,
       entityType: entityType === "ALL" ? undefined : entityType,
     },
-    { enabled: shouldFetch },
+    { enabled: shouldFetch }
   );
 
   // ── Append loaded page ──────────────────────────────────────────────────────
@@ -122,12 +122,17 @@ export function ActivityLogTable({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting && nextCursor && !isFetching && !shouldFetch) {
+        if (
+          entry?.isIntersecting &&
+          nextCursor &&
+          !isFetching &&
+          !shouldFetch
+        ) {
           setActiveCursor(nextCursor);
           setShouldFetch(true);
         }
       },
-      { rootMargin: "300px", threshold: 0 },
+      { rootMargin: "300px", threshold: 0 }
     );
 
     observer.observe(el);

@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
+import { MEMBER_LIMITS } from "@shipyard/api/config/plans";
 import { db } from "@shipyard/db";
 import { Separator } from "@shipyard/ui/components/separator";
+import type { Metadata } from "next";
 import { requireOrgMembership } from "@/server/requireOrgMembership";
+import { BreadcrumbSetter } from "@/src/components/breadcrumb-setter";
 import { InviteMemberDialog } from "./_components/invite-member-dialog";
 import { MemberList } from "./_components/member-list";
 import { PendingInvitations } from "./_components/pending-invitations";
-import { MEMBER_LIMITS } from "@shipyard/api/config/plans";
-import { BreadcrumbSetter } from "@/src/components/breadcrumb-setter";
 
 export const metadata: Metadata = { title: "Members" };
 

@@ -1,6 +1,6 @@
-import { auth } from "@/server/auth";
-import { redirect } from "next/navigation";
 import { db } from "@shipyard/db";
+import { redirect } from "next/navigation";
+import { auth } from "@/server/auth";
 import { OrganizationCard } from "./_components/organization-card";
 
 export default async function DashboardPage() {

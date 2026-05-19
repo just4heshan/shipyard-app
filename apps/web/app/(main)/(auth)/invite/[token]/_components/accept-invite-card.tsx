@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Building2 } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
 import { Button } from "@shipyard/ui/components/button";
+import { Building2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 type MemberRole = "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
 
@@ -20,7 +20,11 @@ const roleLabel: Record<MemberRole, string> = {
   VIEWER: "Viewer",
 };
 
-export function AcceptInviteCard({ token, orgName, role }: AcceptInviteCardProps) {
+export function AcceptInviteCard({
+  token,
+  orgName,
+  role,
+}: AcceptInviteCardProps) {
   const router = useRouter();
 
   const accept = trpc.member.acceptInvitation.useMutation({
@@ -42,7 +46,8 @@ export function AcceptInviteCard({ token, orgName, role }: AcceptInviteCardProps
         </div>
         <h1 className="text-2xl font-bold tracking-tight">You're invited</h1>
         <p className="text-sm text-muted-foreground">
-          Join <strong>{orgName}</strong> as a <strong>{roleLabel[role]}</strong>.
+          Join <strong>{orgName}</strong> as a{" "}
+          <strong>{roleLabel[role]}</strong>.
         </p>
       </div>
 

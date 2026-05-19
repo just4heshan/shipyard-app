@@ -1,6 +1,6 @@
+import type { PrismaClient } from "@shipyard/db";
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
-import type { PrismaClient } from "@shipyard/db";
 
 export interface SendEmailOptions {
   to: string;
@@ -26,7 +26,12 @@ export async function sendEmail({
   // Skip logging when templateName is absent (e.g. legacy callers without full metadata).
   const logId =
     templateName && templateData
-      ? await createPendingLog(db, { recipient: to, subject, templateName, templateData })
+      ? await createPendingLog(db, {
+          recipient: to,
+          subject,
+          templateName,
+          templateData,
+        })
       : null;
 
   try {
@@ -96,7 +101,7 @@ async function createPendingLog(
     subject: string;
     templateName: string;
     templateData: Record<string, unknown>;
-  },
+  }
 ): Promise<string | null> {
   if (!db) return null;
   try {
@@ -122,7 +127,11 @@ async function createPendingLog(
 async function updateLog(
   db: PrismaClient | undefined,
   logId: string | null,
-  data: { status: "SENT" | "FAILED"; deliveredAt?: Date; failureReason?: string },
+  data: {
+    status: "SENT" | "FAILED";
+    deliveredAt?: Date;
+    failureReason?: string;
+  }
 ): Promise<void> {
   if (!db || !logId) return;
   try {
@@ -132,26 +141,26 @@ async function updateLog(
   }
 }
 
+export type { CommentMentionEmailProps } from "./templates/comment-mention";
+export { renderCommentMentionEmail } from "./templates/comment-mention";
+export type { InviteEmailProps } from "./templates/invite";
+export { renderInviteEmail } from "./templates/invite";
+export type { PaymentFailedEmailProps } from "./templates/payment-failed";
+export { renderPaymentFailedEmail } from "./templates/payment-failed";
+export type {
+  SubscriptionCancelScheduledEmailProps,
+  SubscriptionDowngradedEmailProps,
+  SubscriptionReactivatedEmailProps,
+  SubscriptionUpgradeEmailProps,
+} from "./templates/subscription";
+export {
+  renderSubscriptionCancelScheduledEmail,
+  renderSubscriptionDowngradedEmail,
+  renderSubscriptionReactivatedEmail,
+  renderSubscriptionUpgradeEmail,
+} from "./templates/subscription";
+export type { TaskAssignedEmailProps } from "./templates/task-assigned";
+export { renderTaskAssignedEmail } from "./templates/task-assigned";
+export type { VerifyEmailProps } from "./templates/verify-email";
 // Re-export templates so callers can import from one place
 export { renderVerifyEmail } from "./templates/verify-email";
-export type { VerifyEmailProps } from "./templates/verify-email";
-export { renderPaymentFailedEmail } from "./templates/payment-failed";
-export type { PaymentFailedEmailProps } from "./templates/payment-failed";
-export { renderInviteEmail } from "./templates/invite";
-export type { InviteEmailProps } from "./templates/invite";
-export { renderTaskAssignedEmail } from "./templates/task-assigned";
-export type { TaskAssignedEmailProps } from "./templates/task-assigned";
-export { renderCommentMentionEmail } from "./templates/comment-mention";
-export type { CommentMentionEmailProps } from "./templates/comment-mention";
-export {
-  renderSubscriptionUpgradeEmail,
-  renderSubscriptionCancelScheduledEmail,
-  renderSubscriptionReactivatedEmail,
-  renderSubscriptionDowngradedEmail,
-} from "./templates/subscription";
-export type {
-  SubscriptionUpgradeEmailProps,
-  SubscriptionCancelScheduledEmailProps,
-  SubscriptionReactivatedEmailProps,
-  SubscriptionDowngradedEmailProps,
-} from "./templates/subscription";

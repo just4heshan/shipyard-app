@@ -16,7 +16,7 @@ export interface PriceDetails {
 }
 
 export async function fetchPriceDetails(
-  priceId: string,
+  priceId: string
 ): Promise<PriceDetails | null> {
   try {
     const stripe = getStripe();

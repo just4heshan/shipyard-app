@@ -1,4 +1,4 @@
-import type { PrismaClient, Prisma } from "@shipyard/db";
+import type { Prisma, PrismaClient } from "@shipyard/db";
 import { logger } from "@shipyard/logger";
 import { ActivityAction, EntityType } from "../config/activityLog";
 

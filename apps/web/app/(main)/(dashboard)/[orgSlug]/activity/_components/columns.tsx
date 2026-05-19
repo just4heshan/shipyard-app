@@ -1,14 +1,14 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@shipyard/ui/components/avatar";
 import { Badge } from "@shipyard/ui/components/badge";
+import type { ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { userInitials } from "@/lib/userInitials";
 import { ACTION_CONFIG, type ActivityLogItem } from "./types";
 

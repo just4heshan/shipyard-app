@@ -1,24 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  PaymentElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { Loader2, Lock, Zap } from "lucide-react";
+import { Button } from "@shipyard/ui/components/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@shipyard/ui/components/dialog";
-import { Button } from "@shipyard/ui/components/button";
-import { Separator } from "@shipyard/ui/components/separator";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { Loader2, Lock, Zap } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { trpc } from "@/src/providers/trpc-react-provider";
 
 const _key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -105,7 +104,7 @@ function CheckoutForm({
 
     if (confirmError) {
       setError(
-        confirmError.message ?? "Payment setup failed. Please try again.",
+        confirmError.message ?? "Payment setup failed. Please try again."
       );
       setConfirming(false);
       return;
@@ -202,7 +201,14 @@ export function StripeCheckoutDialog({
       setClientSecret(null);
       createIntent.reset();
     }
-  }, [open]);
+  }, [
+    open,
+    createIntent.isPending,
+    orgId,
+    createIntent.reset,
+    createIntent.mutate,
+    clientSecret,
+  ]);
 
   function handleSuccess() {
     setClientSecret(null);
@@ -244,7 +250,10 @@ export function StripeCheckoutDialog({
           ) : (
             <Elements
               stripe={stripePromise}
-              options={{ clientSecret, appearance: getStripeAppearance(isDark) }}
+              options={{
+                clientSecret,
+                appearance: getStripeAppearance(isDark),
+              }}
             >
               <CheckoutForm
                 orgId={orgId}

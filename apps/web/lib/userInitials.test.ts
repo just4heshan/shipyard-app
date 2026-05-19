@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { userInitials } from "./userInitials.js";
 
 // userInitials generates the 1-2 character abbreviation shown in Avatar

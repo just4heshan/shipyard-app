@@ -1,9 +1,9 @@
-import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 import { logger } from "@shipyard/logger";
-import { router, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import { requireMembership, requireOwner } from "../../lib/membership";
-import { getStripe, getProPriceId } from "../../lib/stripe";
+import { getProPriceId, getStripe } from "../../lib/stripe";
+import { protectedProcedure, router } from "../trpc";
 
 export const subscriptionRouter = router({
   /**
@@ -45,7 +45,7 @@ export const subscriptionRouter = router({
         try {
           const stripe = getStripe();
           const price = await stripe.prices.retrieve(
-            org.subscription.stripePriceId,
+            org.subscription.stripePriceId
           );
 
           priceDetails = {
@@ -102,13 +102,13 @@ export const subscriptionRouter = router({
       z.object({
         orgId: z.string(),
         returnUrl: z.url(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireOwner(caller.role);
 
@@ -150,7 +150,7 @@ export const subscriptionRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireOwner(caller.role);
 
@@ -232,7 +232,7 @@ export const subscriptionRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireOwner(caller.role);
 
@@ -249,7 +249,7 @@ export const subscriptionRouter = router({
       // Retrieve the SetupIntent to get the confirmed payment method.
       const setupIntent = await (
         stripe.setupIntents.retrieve as unknown as (
-          id: string,
+          id: string
         ) => Promise<{ payment_method: string | null; status: string }>
       )(input.setupIntentId);
 
@@ -357,7 +357,7 @@ export const subscriptionRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireOwner(caller.role);
 
@@ -402,7 +402,7 @@ export const subscriptionRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireOwner(caller.role);
 
@@ -447,13 +447,13 @@ export const subscriptionRouter = router({
         orgId: z.string(),
         cursor: z.string().optional(),
         limit: z.number().min(1).max(50).default(20),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireOwner(caller.role);
 

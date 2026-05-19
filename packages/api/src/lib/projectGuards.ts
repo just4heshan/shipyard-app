@@ -1,5 +1,5 @@
-import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@shipyard/db";
+import { TRPCError } from "@trpc/server";
 
 /**
  * Asserts a project exists and belongs to the given org.
@@ -8,7 +8,7 @@ import type { PrismaClient } from "@shipyard/db";
 export async function assertProjectBelongsToOrg(
   db: PrismaClient,
   projectId: string,
-  orgId: string,
+  orgId: string
 ) {
   const project = await db.project.findUnique({
     where: { id: projectId },
@@ -28,7 +28,7 @@ export async function assertProjectBelongsToOrg(
 export async function assertTaskBelongsToOrg(
   db: PrismaClient,
   taskId: string,
-  orgId: string,
+  orgId: string
 ) {
   const task = await db.task.findUnique({
     where: { id: taskId },

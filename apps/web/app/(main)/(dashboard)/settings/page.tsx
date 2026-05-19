@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { Separator } from "@shipyard/ui/components/separator";
+import type { Metadata } from "next";
 import { ThemeSelector } from "./_components/theme-selector";
 
 export const metadata: Metadata = { title: "Settings" };

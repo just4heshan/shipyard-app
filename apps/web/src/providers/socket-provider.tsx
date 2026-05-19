@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { type AppSocket, createSocket, disconnectSocket } from "@/lib/socket";
 import { trpc } from "@/src/providers/trpc-react-provider";
-import { createSocket, disconnectSocket, type AppSocket } from "@/lib/socket";
 
 interface SocketContextValue {
   socket: AppSocket | null;
@@ -52,7 +52,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       setSocket(null);
       setConnected(false);
     };
-  }, []);
+  }, [getToken.mutateAsync]);
 
   return (
     <SocketContext.Provider value={{ socket, connected }}>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface ProjectHeaderProps {
@@ -17,7 +17,7 @@ interface ProjectHeaderProps {
 export function ProjectHeader({
   projectId,
   orgId,
-  orgSlug,
+  orgSlug: _orgSlug,
   initialName,
   initialDescription,
   canManage,

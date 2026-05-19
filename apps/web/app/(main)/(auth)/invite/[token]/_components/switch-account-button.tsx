@@ -1,7 +1,7 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { Button } from "@shipyard/ui/components/button";
+import { signOut } from "next-auth/react";
 
 export function SwitchAccountButton({ token }: { token: string }) {
   return (

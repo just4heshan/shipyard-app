@@ -1,6 +1,6 @@
+import { Separator } from "@shipyard/ui/components/separator";
 import { Settings } from "lucide-react";
 import { requireOrgMembership } from "@/server/requireOrgMembership";
-import { Separator } from "@shipyard/ui/components/separator";
 
 export default async function OrgSettingsLayout({
   children,

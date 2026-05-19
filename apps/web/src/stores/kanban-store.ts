@@ -1,5 +1,5 @@
-import { create } from "zustand";
 import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
+import { create } from "zustand";
 
 /** Alias kept for backward compatibility with existing components. */
 
@@ -28,7 +28,7 @@ export const useKanbanStore = create<KanbanStore>((set) => ({
   moveTask: (taskId, toStatus, position) =>
     set((s) => ({
       tasks: s.tasks.map((t) =>
-        t.id === taskId ? { ...t, status: toStatus, position } : t,
+        t.id === taskId ? { ...t, status: toStatus, position } : t
       ),
     })),
 
@@ -37,7 +37,7 @@ export const useKanbanStore = create<KanbanStore>((set) => ({
       const posMap = new Map(updates.map((u) => [u.id, u.position]));
       return {
         tasks: s.tasks.map((t) =>
-          posMap.has(t.id) ? { ...t, position: posMap.get(t.id)! } : t,
+          posMap.has(t.id) ? { ...t, position: posMap.get(t.id)! } : t
         ),
       };
     }),

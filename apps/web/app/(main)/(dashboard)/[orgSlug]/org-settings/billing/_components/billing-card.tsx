@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Zap,
-  CreditCard,
-  CheckCircle,
-  AlertTriangle,
-  Clock,
-  Loader2,
-} from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
-import { Button } from "@shipyard/ui/components/button";
-import { Badge } from "@shipyard/ui/components/badge";
-import { Separator } from "@shipyard/ui/components/separator";
-import { StripeCheckoutDialog } from "@/src/components/stripe-checkout-dialog";
-import { CancelPlanDialog } from "@/src/components/cancel-plan-dialog";
 import type { SubscriptionTier } from "@shipyard/db/enum";
+import { Badge } from "@shipyard/ui/components/badge";
+import { Button } from "@shipyard/ui/components/button";
+import { Separator } from "@shipyard/ui/components/separator";
+import {
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  CreditCard,
+  Loader2,
+  Zap,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { formatPrice } from "@/lib/formatPrice";
+import { CancelPlanDialog } from "@/src/components/cancel-plan-dialog";
+import { StripeCheckoutDialog } from "@/src/components/stripe-checkout-dialog";
+import { trpc } from "@/src/providers/trpc-react-provider";
 import { UsageMeter } from "./usage-meter";
 
 interface SubscriptionInfo {
@@ -114,7 +114,7 @@ export function BillingCard({
   const { formatted, interval } = formatPrice(
     priceDetails?.amount ?? 0,
     priceDetails?.currency ?? "USD",
-    priceDetails?.interval ?? "month",
+    priceDetails?.interval ?? "month"
   );
 
   return (
@@ -181,7 +181,7 @@ export function BillingCard({
                   <p className="font-medium">
                     {new Date(subscription.currentPeriodEnd).toLocaleDateString(
                       "en-US",
-                      { month: "long", day: "numeric", year: "numeric" },
+                      { month: "long", day: "numeric", year: "numeric" }
                     )}
                   </p>
                 </div>

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
-import { requireMembership, requireManagerRole } from "../../lib/membership";
+import { requireManagerRole, requireMembership } from "../../lib/membership";
+import { protectedProcedure, router } from "../trpc";
 
 export const activityLogRouter = router({
   /**
@@ -18,13 +18,13 @@ export const activityLogRouter = router({
         /** Cursor = last seen ActivityLog id, for keyset pagination */
         cursor: z.string().optional(),
         limit: z.number().min(1).max(100).default(50),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
 

@@ -1,17 +1,17 @@
-import express from "express";
-import { createServer } from "http";
-import { Server } from "socket.io";
-import cors from "cors";
+import { createServer } from "node:http";
 import { logger } from "@shipyard/logger";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
   SocketData,
 } from "@shipyard/types/socket";
-import { authMiddleware } from "./middleware/auth.js";
+import cors from "cors";
+import express from "express";
+import { Server } from "socket.io";
 import { registerPresenceHandlers } from "./handlers/presence.js";
 import { registerTaskHandlers } from "./handlers/tasks.js";
 import type { PresenceMap } from "./lib/presence.js";
+import { authMiddleware } from "./middleware/auth.js";
 
 const PORT = Number(process.env.SOCKET_PORT ?? 4000);
 const WEB_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";

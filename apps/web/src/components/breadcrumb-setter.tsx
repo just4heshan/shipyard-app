@@ -20,13 +20,13 @@ export function BreadcrumbSetter({ labels }: BreadcrumbSetterProps) {
 
   // Stringify as a stable dep — labels is a new object each render but
   // values only change when the fetched data changes.
-  const labelsKey = JSON.stringify(labels);
+  const _labelsKey = JSON.stringify(labels);
 
   useEffect(() => {
     setLabels(labels);
     return () => setLabels({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [labelsKey]);
+  }, [setLabels, labels]);
 
   return null;
 }

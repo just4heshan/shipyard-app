@@ -1,11 +1,11 @@
-import { z } from "zod";
-import { TRPCError } from "@trpc/server";
-import { sendEmail, renderInviteEmail } from "@shipyard/email";
-import { router, protectedProcedure } from "../trpc";
+import { renderInviteEmail, sendEmail } from "@shipyard/email";
 import { logger } from "@shipyard/logger";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import { MEMBER_LIMITS } from "../../config/plans";
-import { requireMembership, requireManagerRole } from "../../lib/membership";
-import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
+import { ActivityAction, EntityType, logActivity } from "../../lib/activityLog";
+import { requireManagerRole, requireMembership } from "../../lib/membership";
+import { protectedProcedure, router } from "../trpc";
 
 // ─── router ─────────────────────────────────────────────────────────────────
 
@@ -36,7 +36,7 @@ export const memberRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
 
@@ -90,13 +90,13 @@ export const memberRouter = router({
         orgId: z.string(),
         memberId: z.string(),
         role: z.enum(["OWNER", "ADMIN", "MEMBER", "VIEWER"]),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       if (caller.role !== "OWNER") {
         throw new TRPCError({
@@ -154,7 +154,7 @@ export const memberRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
 
@@ -191,13 +191,13 @@ export const memberRouter = router({
         orgId: z.string(),
         email: z.email("Invalid email address"),
         role: z.enum(["OWNER", "ADMIN", "MEMBER", "VIEWER"]),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
 
@@ -268,7 +268,7 @@ export const memberRouter = router({
 
       // Upsert invitation — refreshes token + expiry on resend
       const expiresAt = new Date(
-        Date.now() + INVITE_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+        Date.now() + INVITE_EXPIRY_DAYS * 24 * 60 * 60 * 1000
       );
       const invitation = await ctx.db.invitation.upsert({
         where: {

@@ -1,9 +1,9 @@
-import { type NextRequest, NextResponse } from "next/server";
-import type Stripe from "stripe";
 import { db } from "@shipyard/db";
 import { logger } from "@shipyard/logger";
-import { processStripeEvent } from "./_lib/process";
+import { type NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { getStripe } from "@/server/stripe";
+import { processStripeEvent } from "./_lib/process";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -14,18 +14,18 @@ export async function POST(req: NextRequest) {
     logger.warn("Stripe webhook received without signature or secret");
     return NextResponse.json(
       { error: "Missing stripe-signature header or webhook secret" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
   const stripe = getStripe();
   if (!stripe) {
     logger.error(
-      "Stripe webhook handler called but STRIPE_SECRET_KEY is not set",
+      "Stripe webhook handler called but STRIPE_SECRET_KEY is not set"
     );
     return NextResponse.json(
       { error: "Stripe not configured" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 

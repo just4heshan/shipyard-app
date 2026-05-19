@@ -1,4 +1,7 @@
-import type { JWT } from "next-auth/jwt";
+// `export {}` makes this a module file so `declare module` blocks are
+// treated as augmentations (merging with next-auth's real types) rather
+// than ambient declarations that replace them entirely.
+export {};
 
 declare module "next-auth" {
   interface Session {

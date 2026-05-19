@@ -1,12 +1,12 @@
 import { router } from "../trpc";
-import { organizationRouter } from "./organization";
-import { memberRouter } from "./member";
 import { activityLogRouter } from "./activityLog";
-import { projectRouter } from "./project";
-import { taskRouter } from "./task";
 import { commentRouter } from "./comment";
+import { memberRouter } from "./member";
+import { organizationRouter } from "./organization";
+import { projectRouter } from "./project";
 import { socketRouter } from "./socket";
 import { subscriptionRouter } from "./subscription";
+import { taskRouter } from "./task";
 
 export const appRouter = router({
   organization: organizationRouter,

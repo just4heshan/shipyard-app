@@ -1,7 +1,5 @@
 "use client";
 
-import { Fragment } from "react";
-import Link from "next/link";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,6 +8,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@shipyard/ui/components/breadcrumb";
+import Link from "next/link";
+import { Fragment } from "react";
 import { useBreadcrumbs } from "@/src/hooks/use-breadcrumbs";
 
 export function AppBreadcrumb() {

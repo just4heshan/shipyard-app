@@ -1,8 +1,5 @@
 "use client";
 
-import { Fragment } from "react";
-import { CheckCircle, XCircle, Clock, RefreshCw, AlertTriangle, ChevronDown } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
 import {
@@ -13,6 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@shipyard/ui/components/table";
+import {
+  AlertTriangle,
+  CheckCircle,
+  ChevronDown,
+  Clock,
+  RefreshCw,
+  XCircle,
+} from "lucide-react";
+import { Fragment } from "react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface WebhookEventsTableProps {
   orgId: string;
@@ -64,7 +71,10 @@ function EventStatusBadge({
   }
   if (retryQueue) {
     return (
-      <Badge variant="secondary" className="gap-1 text-xs text-amber-700 bg-amber-100 hover:bg-amber-100">
+      <Badge
+        variant="secondary"
+        className="gap-1 text-xs text-amber-700 bg-amber-100 hover:bg-amber-100"
+      >
         <RefreshCw className="size-3" />
         Retrying ({retryAttempts}/{maxRetries})
       </Badge>
@@ -90,7 +100,7 @@ export function WebhookEventsTable({ orgId }: WebhookEventsTableProps) {
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     trpc.subscription.listWebhookEvents.useInfiniteQuery(
       { orgId, limit: 20 },
-      { getNextPageParam: (page) => page.nextCursor },
+      { getNextPageParam: (page) => page.nextCursor }
     );
 
   const events = data?.pages.flatMap((p) => p.items) ?? [];

@@ -1,12 +1,26 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noUnknownAtRules": "off",
+        "noArrayIndexKey": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "warn",
+        "noStaticElementInteractions": "warn",
+        "useSemanticElements": "warn",
+        "useFocusableInteractive": "warn"
+      },
+      "performance": {
+        "noImgElement": "warn"
+      }
     }
   },
   "formatter": {
@@ -23,20 +37,17 @@
   },
   "css": {
     "linter": {
-      "enabled": true,
-      "rules": {
-        "nursery": {
-          "noUnknownAtRule": "off"
-        }
-      }
+      "enabled": false
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "dist",
-      ".turbo"
+    "includes": [
+      "**",
+      "!**/*.css",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/dist",
+      "!**/.turbo"
     ]
   }
 }

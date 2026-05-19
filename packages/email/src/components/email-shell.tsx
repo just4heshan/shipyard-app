@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import {
   Body,
   Container,
@@ -8,6 +7,7 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import type { ReactNode } from "react";
 
 export function EmailShell({
   preview,

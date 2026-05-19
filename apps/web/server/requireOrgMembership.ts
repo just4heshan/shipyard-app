@@ -1,6 +1,6 @@
+import { db } from "@shipyard/db";
 import { redirect } from "next/navigation";
 import { auth } from "@/server/auth";
-import { db } from "@shipyard/db";
 
 interface RedirectOptions {
   /** Redirect when the user is not authenticated. Default: "/login" */
@@ -16,7 +16,7 @@ interface RedirectOptions {
  */
 export async function requireOrgMembership(
   orgSlug: string,
-  redirects?: RedirectOptions,
+  redirects?: RedirectOptions
 ) {
   const session = await auth();
   if (!session) redirect(redirects?.unauthenticated ?? "/login");

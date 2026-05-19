@@ -1,11 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { MoreHorizontal, Archive, ArchiveRestore, Trash2 } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
-import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import type { MemberRole } from "@shipyard/db/enum";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
 import {
@@ -21,7 +16,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@shipyard/ui/components/dropdown-menu";
-import type { MemberRole } from "@shipyard/db/enum";
+import { Archive, ArchiveRestore, MoreHorizontal, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ConfirmDialog } from "@/src/components/confirm-dialog";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface Project {
   id: string;
@@ -73,7 +73,9 @@ export function ProjectCard({
 
   return (
     <>
-      <Card className={`group relative overflow-hidden hover:shadow-md transition-shadow${isArchived ? " opacity-70 grayscale-30" : ""}`}>
+      <Card
+        className={`group relative overflow-hidden hover:shadow-md transition-shadow${isArchived ? " opacity-70 grayscale-30" : ""}`}
+      >
         {/* Subtle grid background */}
         <div
           style={{

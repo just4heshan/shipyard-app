@@ -1,7 +1,7 @@
 export function formatPrice(
   amount: number,
   currency: string,
-  interval: string,
+  interval: string
 ) {
   const formatted = new Intl.NumberFormat("en-US", {
     style: "currency",

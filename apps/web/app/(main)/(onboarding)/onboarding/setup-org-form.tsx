@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Building2 } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
+import { toSlug } from "@shipyard/api/lib/slug";
 import { Button } from "@shipyard/ui/components/button";
 import { Input } from "@shipyard/ui/components/input";
 import { Label } from "@shipyard/ui/components/label";
-import { toSlug } from "@shipyard/api/lib/slug";
+import { Building2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 export function SetupOrgForm() {
   const router = useRouter();
@@ -125,7 +125,7 @@ export function SetupOrgForm() {
                         {item}
                       </span>
                     </div>
-                  ),
+                  )
                 )}
               </div>
             </div>

@@ -1,14 +1,14 @@
-import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 import type { PrismaClient } from "@shipyard/db";
-import { sendEmail, renderCommentMentionEmail } from "@shipyard/email";
-import { router, protectedProcedure } from "../trpc";
+import { renderCommentMentionEmail, sendEmail } from "@shipyard/email";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { ActivityAction, EntityType, logActivity } from "../../lib/activityLog";
 import {
-  requireMembership,
   requireContributorRole,
+  requireMembership,
 } from "../../lib/membership";
-import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
 import { assertTaskBelongsToOrg } from "../../lib/projectGuards";
+import { protectedProcedure, router } from "../trpc";
 
 export const commentRouter = router({
   list: protectedProcedure
@@ -41,13 +41,13 @@ export const commentRouter = router({
         taskId: z.string(),
         orgId: z.string(),
         content: z.string().min(1, "Comment cannot be empty").max(5000),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireContributorRole(caller.role);
       await assertTaskBelongsToOrg(ctx.db, input.taskId, input.orgId);
@@ -91,7 +91,7 @@ export const commentRouter = router({
           mentionIds,
           comment,
         }).catch((err: unknown) =>
-          console.error("[comment.create] failed to send mention emails:", err),
+          console.error("[comment.create] failed to send mention emails:", err)
         );
       }
 
@@ -104,7 +104,7 @@ export const commentRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
 
       const comment = await ctx.db.comment.findUnique({
@@ -157,7 +157,7 @@ function extractMentionIds(content: string): string[] {
   const matches = [...content.matchAll(/@\[([^|]+)\|([^\]]+)\]/g)];
   return [
     ...new Set(
-      matches.map((m) => m[2]).filter((id): id is string => id !== undefined),
+      matches.map((m) => m[2]).filter((id): id is string => id !== undefined)
     ),
   ];
 }
@@ -175,7 +175,7 @@ async function sendMentionEmails(
       createdAt: Date;
       author: { user: { name: string | null } };
     };
-  },
+  }
 ) {
   const [members, taskWithProject] = await Promise.all([
     // Fetch only the explicitly mentioned members by ID — no name matching
@@ -236,6 +236,6 @@ async function sendMentionEmails(
         },
         db,
       });
-    }),
+    })
   );
 }

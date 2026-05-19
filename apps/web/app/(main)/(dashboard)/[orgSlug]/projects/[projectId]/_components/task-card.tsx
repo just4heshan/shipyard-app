@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CalendarDays } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@shipyard/ui/components/avatar";
+import type { Task as KanbanTask, TaskPriority } from "@shipyard/types/task";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@shipyard/ui/components/avatar";
 import { Badge } from "@shipyard/ui/components/badge";
+import { CalendarDays } from "lucide-react";
+import { useState } from "react";
 import { userInitials } from "@/lib/userInitials";
 import { TaskDetailSheet } from "./task-detail-sheet";
-
-import type {Task as KanbanTask, TaskPriority } from "@shipyard/types/task";
 
 const PRIORITY_VARIANT: Record<
   TaskPriority,
@@ -37,7 +40,16 @@ interface TaskCardProps {
   isArchived?: boolean;
 }
 
-export function TaskCard({ task, projectId = "", orgId = "", callerRole = "", currentMemberId = "", members = [], isDragging = false, isArchived = false }: TaskCardProps) {
+export function TaskCard({
+  task,
+  projectId = "",
+  orgId = "",
+  callerRole = "",
+  currentMemberId = "",
+  members = [],
+  isDragging = false,
+  isArchived = false,
+}: TaskCardProps) {
   const [detailOpen, setDetailOpen] = useState(false);
 
   const {

@@ -1,8 +1,8 @@
-import { io, type Socket } from "socket.io-client";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from "@shipyard/types/socket";
+import { io, type Socket } from "socket.io-client";
 
 export type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -15,14 +15,11 @@ export function createSocket(token: string): AppSocket {
     _socket = null;
   }
 
-  _socket = io(
-    process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:4000",
-    {
-      auth: { token },
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
-    },
-  );
+  _socket = io(process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:4000", {
+    auth: { token },
+    reconnectionAttempts: 5,
+    reconnectionDelay: 2000,
+  });
 
   return _socket;
 }

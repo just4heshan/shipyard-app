@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { Zap, Check, Building2, Mail } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
+import { Badge } from "@shipyard/ui/components/badge";
+import { Button } from "@shipyard/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from "@shipyard/ui/components/dialog";
-import { Button } from "@shipyard/ui/components/button";
-import { Badge } from "@shipyard/ui/components/badge";
 import { Separator } from "@shipyard/ui/components/separator";
-import { StripeCheckoutDialog } from "./stripe-checkout-dialog";
+import { Building2, Check, Mail, Zap } from "lucide-react";
+import { useState } from "react";
 import { formatPrice } from "@/lib/formatPrice";
+import { trpc } from "@/src/providers/trpc-react-provider";
+import { StripeCheckoutDialog } from "./stripe-checkout-dialog";
 
 export type PlanLimitType = "projects" | "members" | "orgs";
 
@@ -87,7 +87,7 @@ export function UpgradeDialog({
 
   const { data: proPlan } = trpc.subscription.getProPlanDetails.useQuery(
     { orgId },
-    { enabled: open },
+    { enabled: open }
   );
 
   const proPrice = proPlan

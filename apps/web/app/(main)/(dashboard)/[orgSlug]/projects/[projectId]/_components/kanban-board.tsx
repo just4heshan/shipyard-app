@@ -1,24 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   DndContext,
+  type DragEndEvent,
   DragOverlay,
+  type DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
-  type DragEndEvent,
-  type DragStartEvent,
 } from "@dnd-kit/core";
+import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
+import { useEffect, useState } from "react";
+import { usePresence } from "@/src/hooks/use-presence";
+import { useSocketTasks } from "@/src/hooks/use-socket-tasks";
+import { useSocket } from "@/src/providers/socket-provider";
 import { trpc } from "@/src/providers/trpc-react-provider";
 import { useKanbanStore } from "@/src/stores/kanban-store";
-import type { Task as KanbanTask, TaskStatus } from "@shipyard/types/task";
-import { useSocket } from "@/src/providers/socket-provider";
-import { useSocketTasks } from "@/src/hooks/use-socket-tasks";
-import { usePresence } from "@/src/hooks/use-presence";
 import { KanbanColumn } from "./kanban-column";
-import { TaskCard } from "./task-card";
 import { PresenceAvatars } from "./presence-avatars";
+import { TaskCard } from "./task-card";
 
 const COLUMNS: { id: TaskStatus; label: string }[] = [
   { id: "TODO", label: "To Do" },
@@ -60,10 +60,10 @@ export function KanbanBoard({
   // Hydrate store once on mount
   useEffect(() => {
     setTasks(initialTasks);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [setTasks, initialTasks]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
   const updateStatus = trpc.task.updateStatus.useMutation({
@@ -110,7 +110,7 @@ export function KanbanBoard({
     const overColumn = COLUMNS.find((c) => c.id === overId);
     if (overColumn && draggedTask.status !== overColumn.id) {
       const columnTasks = tasks.filter(
-        (t) => t.status === overColumn.id && t.id !== draggedTask.id,
+        (t) => t.status === overColumn.id && t.id !== draggedTask.id
       );
       const newPosition = columnTasks.length;
       moveTask(draggedTask.id, overColumn.id, newPosition);
@@ -129,7 +129,7 @@ export function KanbanBoard({
     if (draggedTask.status !== overTask.status) {
       // Cross-column drop onto a task
       const columnTasks = tasks.filter(
-        (t) => t.status === overTask.status && t.id !== draggedTask.id,
+        (t) => t.status === overTask.status && t.id !== draggedTask.id
       );
       const insertAt = columnTasks.findIndex((t) => t.id === overTask.id);
       const newPosition = insertAt === -1 ? columnTasks.length : insertAt;

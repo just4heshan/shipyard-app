@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { trpc } from "@/src/providers/trpc-react-provider";
-import { useKanbanStore } from "@/src/stores/kanban-store";
 import type { TaskStatus } from "@shipyard/types/task";
-import { useSocket } from "@/src/providers/socket-provider";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@shipyard/ui/components/avatar";
 import { Button } from "@shipyard/ui/components/button";
-import { Input } from "@shipyard/ui/components/input";
-import { Label } from "@shipyard/ui/components/label";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@shipyard/ui/components/dialog";
+import { Input } from "@shipyard/ui/components/input";
+import { Label } from "@shipyard/ui/components/label";
 import {
   Select,
   SelectContent,
@@ -23,12 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shipyard/ui/components/select";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@shipyard/ui/components/avatar";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { userInitials } from "@/lib/userInitials";
+import { useSocket } from "@/src/providers/socket-provider";
+import { trpc } from "@/src/providers/trpc-react-provider";
+import { useKanbanStore } from "@/src/stores/kanban-store";
 
 interface Member {
   id: string;
@@ -60,7 +60,9 @@ export function CreateTaskDialog({
   members,
 }: CreateTaskDialogProps) {
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const [priority, setPriority] = useState<
+    "LOW" | "MEDIUM" | "HIGH" | "URGENT"
+  >("MEDIUM");
   const [assigneeId, setAssigneeId] = useState<string>("none");
   const [dueDate, setDueDate] = useState("");
 

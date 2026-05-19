@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import { MEMBER_LIMITS, PROJECT_LIMITS } from "@shipyard/api/config/plans";
 import { db } from "@shipyard/db";
+import type { Metadata } from "next";
 import { requireOrgMembership } from "@/server/requireOrgMembership";
-import { BreadcrumbSetter } from "@/src/components/breadcrumb-setter";
 import { fetchPriceDetails } from "@/server/stripe";
-import { PROJECT_LIMITS, MEMBER_LIMITS } from "@shipyard/api/config/plans";
+import { BreadcrumbSetter } from "@/src/components/breadcrumb-setter";
 import { BillingCard } from "./_components/billing-card";
 
 export const metadata: Metadata = { title: "Billing" };
@@ -35,10 +35,9 @@ export default async function BillingPage({
     db.member.count({ where: { organizationId: orgId } }),
   ]);
 
-  const priceDetails =
-    subscription?.stripePriceId
-      ? await fetchPriceDetails(subscription.stripePriceId)
-      : null;
+  const priceDetails = subscription?.stripePriceId
+    ? await fetchPriceDetails(subscription.stripePriceId)
+    : null;
 
   const tier = organization.subscriptionTier;
   const projectLimit = PROJECT_LIMITS[tier];
@@ -48,27 +47,26 @@ export default async function BillingPage({
     <>
       <BreadcrumbSetter labels={{ [orgSlug]: organization.name }} />
       <BillingCard
-      orgId={orgId}
-      orgSlug={orgSlug}
-      orgName={organization.name}
-      tier={tier}
-      isOwner={isOwner}
-      subscription={
-        subscription
-          ? {
-              status: subscription.status,
-              currentPeriodEnd: subscription.currentPeriodEnd.toISOString(),
-              cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
-            }
-          : null
-      }
-      priceDetails={priceDetails}
-      usage={{
-        projects: { used: projectCount, limit: projectLimit },
-        members: { used: memberCount, limit: memberLimit },
-      }}
-    />
+        orgId={orgId}
+        orgSlug={orgSlug}
+        orgName={organization.name}
+        tier={tier}
+        isOwner={isOwner}
+        subscription={
+          subscription
+            ? {
+                status: subscription.status,
+                currentPeriodEnd: subscription.currentPeriodEnd.toISOString(),
+                cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+              }
+            : null
+        }
+        priceDetails={priceDetails}
+        usage={{
+          projects: { used: projectCount, limit: projectLimit },
+          members: { used: memberCount, limit: memberLimit },
+        }}
+      />
     </>
   );
 }
-

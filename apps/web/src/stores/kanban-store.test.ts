@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { useKanbanStore } from "./kanban-store.js";
 import { mockTask } from "@shipyard/testing";
+import { beforeEach, describe, expect, it } from "vitest";
+import { useKanbanStore } from "./kanban-store.js";
 
 // The Zustand store is plain JavaScript — no browser, no React, no DOM needed.
 // We call store actions directly and assert the resulting state is correct.
@@ -31,7 +31,9 @@ describe("setTasks", () => {
 
   it("replaces an existing list entirely", () => {
     useKanbanStore.getState().setTasks([mockTask({ id: "old" })]);
-    useKanbanStore.getState().setTasks([mockTask({ id: "new-1" }), mockTask({ id: "new-2" })]);
+    useKanbanStore
+      .getState()
+      .setTasks([mockTask({ id: "new-1" }), mockTask({ id: "new-2" })]);
     // The old task must be gone — setTasks is a full replacement, not a merge
     expect(getTasks().find((t) => t.id === "old")).toBeUndefined();
     expect(getTasks()).toHaveLength(2);
@@ -66,13 +68,17 @@ describe("addTask", () => {
 
 describe("updateTask", () => {
   it("updates the specified field", () => {
-    useKanbanStore.getState().setTasks([mockTask({ id: "t-1", title: "Old title" })]);
+    useKanbanStore
+      .getState()
+      .setTasks([mockTask({ id: "t-1", title: "Old title" })]);
     useKanbanStore.getState().updateTask("t-1", { title: "New title" });
     expect(getTasks().find((t) => t.id === "t-1")?.title).toBe("New title");
   });
 
   it("preserves fields that were not included in the update", () => {
-    useKanbanStore.getState().setTasks([mockTask({ id: "t-1", priority: "HIGH", status: "TODO" })]);
+    useKanbanStore
+      .getState()
+      .setTasks([mockTask({ id: "t-1", priority: "HIGH", status: "TODO" })]);
     // Only update the title — priority and status must stay untouched
     useKanbanStore.getState().updateTask("t-1", { title: "Changed" });
     const task = getTasks().find((t) => t.id === "t-1");
@@ -81,10 +87,12 @@ describe("updateTask", () => {
   });
 
   it("does not affect other tasks", () => {
-    useKanbanStore.getState().setTasks([
-      mockTask({ id: "t-1", title: "Task 1" }),
-      mockTask({ id: "t-2", title: "Task 2" }),
-    ]);
+    useKanbanStore
+      .getState()
+      .setTasks([
+        mockTask({ id: "t-1", title: "Task 1" }),
+        mockTask({ id: "t-2", title: "Task 2" }),
+      ]);
     useKanbanStore.getState().updateTask("t-1", { title: "Updated" });
     // t-2 must be completely untouched
     expect(getTasks().find((t) => t.id === "t-2")?.title).toBe("Task 2");
@@ -98,7 +106,9 @@ describe("updateTask", () => {
 
 describe("moveTask", () => {
   it("updates the task's status", () => {
-    useKanbanStore.getState().setTasks([mockTask({ id: "t-1", status: "TODO" })]);
+    useKanbanStore
+      .getState()
+      .setTasks([mockTask({ id: "t-1", status: "TODO" })]);
     useKanbanStore.getState().moveTask("t-1", "IN_PROGRESS", 0);
     expect(getTasks().find((t) => t.id === "t-1")?.status).toBe("IN_PROGRESS");
   });
@@ -110,10 +120,12 @@ describe("moveTask", () => {
   });
 
   it("does not affect other tasks", () => {
-    useKanbanStore.getState().setTasks([
-      mockTask({ id: "t-1", status: "TODO" }),
-      mockTask({ id: "t-2", status: "TODO" }),
-    ]);
+    useKanbanStore
+      .getState()
+      .setTasks([
+        mockTask({ id: "t-1", status: "TODO" }),
+        mockTask({ id: "t-2", status: "TODO" }),
+      ]);
     useKanbanStore.getState().moveTask("t-1", "DONE", 0);
     expect(getTasks().find((t) => t.id === "t-2")?.status).toBe("TODO");
   });
@@ -126,10 +138,12 @@ describe("moveTask", () => {
 
 describe("reorderTasks", () => {
   it("updates positions for all listed tasks", () => {
-    useKanbanStore.getState().setTasks([
-      mockTask({ id: "t-1", position: 0 }),
-      mockTask({ id: "t-2", position: 1 }),
-    ]);
+    useKanbanStore
+      .getState()
+      .setTasks([
+        mockTask({ id: "t-1", position: 0 }),
+        mockTask({ id: "t-2", position: 1 }),
+      ]);
     useKanbanStore.getState().reorderTasks([
       { id: "t-1", position: 1 },
       { id: "t-2", position: 0 },
@@ -139,11 +153,13 @@ describe("reorderTasks", () => {
   });
 
   it("does not affect tasks not included in the update list", () => {
-    useKanbanStore.getState().setTasks([
-      mockTask({ id: "t-1", position: 0 }),
-      mockTask({ id: "t-2", position: 1 }),
-      mockTask({ id: "t-3", position: 2 }),
-    ]);
+    useKanbanStore
+      .getState()
+      .setTasks([
+        mockTask({ id: "t-1", position: 0 }),
+        mockTask({ id: "t-2", position: 1 }),
+        mockTask({ id: "t-3", position: 2 }),
+      ]);
     // Only reorder t-1 and t-2 — t-3 must stay at position 2
     useKanbanStore.getState().reorderTasks([
       { id: "t-1", position: 1 },
@@ -160,19 +176,17 @@ describe("reorderTasks", () => {
 
 describe("removeTask", () => {
   it("removes the specified task", () => {
-    useKanbanStore.getState().setTasks([
-      mockTask({ id: "t-1" }),
-      mockTask({ id: "t-2" }),
-    ]);
+    useKanbanStore
+      .getState()
+      .setTasks([mockTask({ id: "t-1" }), mockTask({ id: "t-2" })]);
     useKanbanStore.getState().removeTask("t-1");
     expect(getTasks().find((t) => t.id === "t-1")).toBeUndefined();
   });
 
   it("leaves all other tasks intact", () => {
-    useKanbanStore.getState().setTasks([
-      mockTask({ id: "t-1" }),
-      mockTask({ id: "t-2" }),
-    ]);
+    useKanbanStore
+      .getState()
+      .setTasks([mockTask({ id: "t-1" }), mockTask({ id: "t-2" })]);
     useKanbanStore.getState().removeTask("t-1");
     expect(getTasks()).toHaveLength(1);
     expect(getTasks()[0]?.id).toBe("t-2");

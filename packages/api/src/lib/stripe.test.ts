@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { TRPCError } from "@trpc/server";
-import { getStripe, getProPriceId } from "./stripe.js";
+import { afterEach, describe, expect, it } from "vitest";
+import { getProPriceId, getStripe } from "./stripe.js";
 
 // These helpers gate Stripe functionality behind env vars.
 // We test the guard behaviour without needing a real Stripe key.

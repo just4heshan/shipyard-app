@@ -1,11 +1,11 @@
 "use server";
 
-import { z } from "zod";
-import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import { db } from "@shipyard/db";
-import { sendEmail, renderVerifyEmail } from "@shipyard/email";
+import { renderVerifyEmail, sendEmail } from "@shipyard/email";
 import { logger } from "@shipyard/logger";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -23,7 +23,7 @@ export type RegisterState =
 
 export async function register(
   _prev: RegisterState,
-  formData: FormData,
+  formData: FormData
 ): Promise<RegisterState> {
   const raw = {
     name: formData.get("name"),

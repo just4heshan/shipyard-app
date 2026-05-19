@@ -1,23 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Users, FolderKanban, Trash } from "lucide-react";
 import type { Prisma } from "@shipyard/db";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@shipyard/ui/components/card";
 import { Badge } from "@shipyard/ui/components/badge";
 import { Button } from "@shipyard/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@shipyard/ui/components/card";
+import { FolderKanban, Trash, Users } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ConfirmDialog } from "@/src/components/confirm-dialog";
 import { trpc } from "@/src/providers/trpc-react-provider";
 import { useOrgStore } from "@/src/stores/org-store";
-import { ConfirmDialog } from "@/src/components/confirm-dialog";
-import { useState } from "react";
 
 // Derived from the Prisma select in dashboard/page.tsx — stays in sync automatically
 export type OrganizationCardProps = Prisma.MemberGetPayload<{

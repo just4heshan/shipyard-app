@@ -1,11 +1,11 @@
-import { z } from "zod";
-import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure } from "../trpc";
 import { logger } from "@shipyard/logger";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import { PROJECT_LIMITS } from "../../config/plans";
-import { requireMembership, requireManagerRole } from "../../lib/membership";
-import { logActivity, ActivityAction, EntityType } from "../../lib/activityLog";
+import { ActivityAction, EntityType, logActivity } from "../../lib/activityLog";
+import { requireManagerRole, requireMembership } from "../../lib/membership";
 import { assertProjectBelongsToOrg } from "../../lib/projectGuards";
+import { protectedProcedure, router } from "../trpc";
 
 export const projectRouter = router({
   list: protectedProcedure
@@ -36,13 +36,13 @@ export const projectRouter = router({
         orgId: z.string(),
         name: z.string().min(1, "Name is required").max(100),
         description: z.string().max(500).optional(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
 
@@ -110,13 +110,13 @@ export const projectRouter = router({
         orgId: z.string(),
         name: z.string().min(1).max(100).optional(),
         description: z.string().max(500).nullable().optional(),
-      }),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
       await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
@@ -151,7 +151,7 @@ export const projectRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
       await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
@@ -181,7 +181,7 @@ export const projectRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       requireManagerRole(caller.role);
       await assertProjectBelongsToOrg(ctx.db, input.projectId, input.orgId);
@@ -231,7 +231,7 @@ export const projectRouter = router({
       const caller = await requireMembership(
         ctx.db,
         ctx.session.user.id,
-        input.orgId,
+        input.orgId
       );
       if (caller.role !== "OWNER") {
         throw new TRPCError({

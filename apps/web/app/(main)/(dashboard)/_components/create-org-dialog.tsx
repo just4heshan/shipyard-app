@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
-import { trpc } from "@/src/providers/trpc-react-provider";
+import { toSlug } from "@shipyard/api/lib/slug";
 import { Button } from "@shipyard/ui/components/button";
-import { Input } from "@shipyard/ui/components/input";
-import { Label } from "@shipyard/ui/components/label";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@shipyard/ui/components/dialog";
-import { toSlug } from "@shipyard/api/lib/slug";
+import { Input } from "@shipyard/ui/components/input";
+import { Label } from "@shipyard/ui/components/label";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { trpc } from "@/src/providers/trpc-react-provider";
 
 interface CreateOrgDialogProps {
   open?: boolean;

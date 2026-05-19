@@ -1,5 +1,5 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "@shipyard/api/server/routers/_app";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { createTRPCContext } from "@/server/trpc";
 
 const handler = (req: Request) =>

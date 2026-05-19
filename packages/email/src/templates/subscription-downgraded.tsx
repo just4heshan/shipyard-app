@@ -1,4 +1,10 @@
-import { Button, Heading, Section, Text, render } from "@react-email/components";
+import {
+  Button,
+  Heading,
+  render,
+  Section,
+  Text,
+} from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
 export interface SubscriptionDowngradedEmailProps {
@@ -13,7 +19,9 @@ export function SubscriptionDowngradedEmail({
   billingUrl,
 }: SubscriptionDowngradedEmailProps) {
   return (
-    <EmailShell preview={`Your ${orgName} workspace has moved to the Free plan`}>
+    <EmailShell
+      preview={`Your ${orgName} workspace has moved to the Free plan`}
+    >
       <Text style={styles.badgeNeutral}>📦 Now on Free Plan</Text>
       <Heading style={styles.heading}>Your Pro plan has ended</Heading>
       <Text style={styles.body_text}>
@@ -43,7 +51,7 @@ SubscriptionDowngradedEmail.PreviewProps = {
 export default SubscriptionDowngradedEmail;
 
 export async function renderSubscriptionDowngradedEmail(
-  props: SubscriptionDowngradedEmailProps,
+  props: SubscriptionDowngradedEmailProps
 ): Promise<string> {
   return render(<SubscriptionDowngradedEmail {...props} />);
 }

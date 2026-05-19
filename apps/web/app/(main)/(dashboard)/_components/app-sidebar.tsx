@@ -1,5 +1,4 @@
 import { db } from "@shipyard/db";
-import { auth } from "@/server/auth";
 import {
   Sidebar,
   SidebarContent,
@@ -7,10 +6,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@shipyard/ui/components/sidebar";
-import { NavMain } from "./nav-main";
-import { OrgSwitcher } from "./org-switcher";
-import { NavUser } from "./nav-user";
 import { redirect } from "next/navigation";
+import { auth } from "@/server/auth";
+import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
+import { OrgSwitcher } from "./org-switcher";
 
 export async function AppSidebar() {
   const session = await auth();
@@ -46,7 +46,12 @@ export async function AppSidebar() {
 
       {/* Nav items */}
       <SidebarContent>
-        <NavMain memberships={memberships.map((m) => ({ role: m.role, orgSlug: m.organization.slug }))} />
+        <NavMain
+          memberships={memberships.map((m) => ({
+            role: m.role,
+            orgSlug: m.organization.slug,
+          }))}
+        />
       </SidebarContent>
 
       {/* Footer — user info + logout */}

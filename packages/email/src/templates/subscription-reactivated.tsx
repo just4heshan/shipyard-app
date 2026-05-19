@@ -1,4 +1,10 @@
-import { Button, Heading, Section, Text, render } from "@react-email/components";
+import {
+  Button,
+  Heading,
+  render,
+  Section,
+  Text,
+} from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
 export interface SubscriptionReactivatedEmailProps {
@@ -44,7 +50,7 @@ SubscriptionReactivatedEmail.PreviewProps = {
 export default SubscriptionReactivatedEmail;
 
 export async function renderSubscriptionReactivatedEmail(
-  props: SubscriptionReactivatedEmailProps,
+  props: SubscriptionReactivatedEmailProps
 ): Promise<string> {
   return render(<SubscriptionReactivatedEmail {...props} />);
 }

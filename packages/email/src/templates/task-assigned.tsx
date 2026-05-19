@@ -2,9 +2,9 @@ import {
   Button,
   Heading,
   Hr,
+  render,
   Section,
   Text,
-  render,
 } from "@react-email/components";
 import { EmailShell, styles } from "../components/email-shell";
 
@@ -142,7 +142,7 @@ export function TaskAssignedEmail({
               ...local.priorityBadge,
               color: priorityConfig.color,
               backgroundColor: priorityConfig.bg,
-              borderColor: priorityConfig.color + "33",
+              borderColor: `${priorityConfig.color}33`,
             }}
           >
             {priorityConfig.icon} {priorityConfig.label} priority
@@ -204,7 +204,7 @@ TaskAssignedEmail.PreviewProps = {
 export default TaskAssignedEmail;
 
 export async function renderTaskAssignedEmail(
-  props: TaskAssignedEmailProps,
+  props: TaskAssignedEmailProps
 ): Promise<string> {
   return render(<TaskAssignedEmail {...props} />);
 }

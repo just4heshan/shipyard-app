@@ -1,6 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@shipyard/db";
 import { logger } from "@shipyard/logger";
+import { type NextRequest, NextResponse } from "next/server";
 import { processRetryQueue } from "../_lib/retry";
 
 /**
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     logger.error("Retry queue processor crashed", { error: message });
     return NextResponse.json(
       { error: "Internal error during retry processing" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

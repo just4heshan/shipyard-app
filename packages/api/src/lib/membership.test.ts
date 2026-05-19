@@ -1,6 +1,10 @@
-import { describe, it, expect } from "vitest";
 import { TRPCError } from "@trpc/server";
-import { requireManagerRole, requireContributorRole, requireOwner } from "./membership.js";
+import { describe, expect, it } from "vitest";
+import {
+  requireContributorRole,
+  requireManagerRole,
+  requireOwner,
+} from "./membership.js";
 
 // TDD exercise: these tests describe expected behavior first.
 // Run them against the existing code to confirm everything passes.

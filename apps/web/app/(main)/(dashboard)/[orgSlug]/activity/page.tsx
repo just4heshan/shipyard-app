@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { db } from "@shipyard/db";
 import { Separator } from "@shipyard/ui/components/separator";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { requireOrgMembership } from "@/server/requireOrgMembership";
 import { BreadcrumbSetter } from "@/src/components/breadcrumb-setter";
 import { ActivityLogTable } from "./_components/activity-log-table";
