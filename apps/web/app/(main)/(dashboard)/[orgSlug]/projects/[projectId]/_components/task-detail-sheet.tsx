@@ -102,7 +102,7 @@ export function TaskDetailSheet({
     task.priority,
     task.description,
     task.title,
-    task.dueDate.split,
+    task?.dueDate?.split,
     task.dueDate,
     task.assignee?.id,
   ]);
