@@ -2,6 +2,37 @@
 
 A full-stack project management SaaS built as a Turborepo monorepo. Teams can create organisations, manage projects on a Kanban board, collaborate in real time, and subscribe to paid plans via Stripe.
 
+## Demo
+
+**Live:** https://shipyard-app-web.vercel.app
+
+Sign in using **email/password** with any account below — all share the same password. (Using "Sign in with GitHub/Google" creates a new empty account and bypasses the demo data.)
+
+**Password for all accounts:** `Demo1234!`
+
+### Horizon Labs — PRO tier
+
+| Name | Email | Role |
+|---|---|---|
+| Jordan Rivera | jordan@horizon-labs.io | Owner |
+| Alice Chen | alice@horizon-labs.io | Admin |
+| Bob Martin | bob@horizon-labs.io | Member |
+| Carol Lee | carol@horizon-labs.io | Viewer |
+
+Horizon Labs has 5 projects (3 active, 1 completed, 1 archived), 2 teams, a full Kanban board with tasks, comments, and an activity log spanning 90 days.
+
+### Reef Digital — FREE tier
+
+| Name | Email | Role |
+|---|---|---|
+| Jordan Rivera | jordan@horizon-labs.io | Owner |
+
+Reef Digital is a single-owner FREE tier org with 1 active project demonstrating plan-level feature gating.
+
+### Stripe test billing
+
+The billing flow runs in Stripe **test mode**. To test upgrading a plan use card number `4242 4242 4242 4242` with any future expiry and any CVC.
+
 ## Apps and packages
 
 ### Apps
